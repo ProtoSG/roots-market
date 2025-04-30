@@ -1,0 +1,11 @@
+http://localhost:4000/api/artisan
+
+--silent 
+--include
+
+Accept: application/json; 
+Connection: keep-alive 
+Content-Type: application/json; charset=utf-8
+User-Agent: VRC
+
+GET /1
