@@ -1,0 +1,54 @@
+import { connection } from "../connection.ts";
+import type { Artisan } from "../models/artisan.model.ts";
+
+export const createArtisan = async(artisan: Artisan) => {
+  const query = `
+    INSERT INTO Artisan (name, username, password, bio, location, profileImageUrl, email, createdAt)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  
+  const { lastInsertRowid } = await connection.execute({
+    sql: query,
+    args: [
+      artisan.name,
+      artisan.username,
+      artisan.password,
+      artisan.bio,
+      artisan.location,
+      artisan.profileImageUrl,
+      artisan.email,
+      artisan.createdAt
+    ]
+  });
+
+  return { id : lastInsertRowid}
+}
+
+export const readArtisanById = async(id: number) => {
+  const query = `
+    SELECT * FROM Artisan WHERE artisanId = ?;
+  `;
+
+  const { rows } = await connection.execute({
+    sql: query,
+    args: [id]
+  });
+
+  return rows[0]; 
+}
+
+export const foundArtisanByEmail = async(email: string) => {
+  const query = `
+    SELECT * FROM Artisan WHERE email = ?;
+  `
+  const { rows } = await connection.execute(({
+    sql: query,
+    args: [email]
+  }))
+
+  if (rows.length !== 0) {
+    return true
+  }
+
+  return false
+}
