@@ -12,5 +12,5 @@ User-Agent: VRC
 
 POST 
 {
-  "name" : "Test-007"
+  "total" : 200
 }
