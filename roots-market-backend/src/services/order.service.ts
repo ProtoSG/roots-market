@@ -5,7 +5,7 @@ import { toInt } from "../utils/toInt.utils";
 export const createOrder = async(order: Order) => {
  try {
     const query = `
-      INSERT INTO Order (total, status, createdAt)
+      INSERT INTO Orders (total, status, createdAt)
       VALUES (?, ?, ?)
     `;
 

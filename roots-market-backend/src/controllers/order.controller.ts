@@ -2,11 +2,11 @@ import type { Request, Response } from "express";
 import { Order, StatusOrder } from "../models/order.model";
 import { createOrder, updateStatusOrder } from "../services/order.service";
 
-export const registerOrder = async(res: Response, req: Request) => {
+export const registerOrder = async(req: Request, res: Response) => {
   try {
     const {total}:Order = req.body
 
-    const newOrder = new Order ( total  )
+    const newOrder = new Order ( total )
     const orderCreated = await createOrder(newOrder)
     
     res.json({
