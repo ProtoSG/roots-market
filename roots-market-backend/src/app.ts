@@ -11,6 +11,7 @@ import productRoutes from "./routes/product.routes.ts"
 import socialNetworkRoutes from "./routes/socialNetwork.routes.ts"
 import tagRoutes from "./routes/tag.routes.ts"
 import { FRONTEND_URL } from "./config.ts"
+import { swaggerSpec, swaggerUI } from "./swagger.ts"
 
 const app = express()
 
@@ -22,6 +23,8 @@ app.use(
 )
 app.use(express.json())
 app.use(cookieParser())
+
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec))
 
 app.use("/api", artisanRoutes)
 app.use("/api", imageRoutes)
