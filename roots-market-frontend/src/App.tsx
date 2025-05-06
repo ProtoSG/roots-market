@@ -1,11 +1,15 @@
-import { Header } from "./components/public/Header"
+import { Route, Routes } from "react-router-dom"
+import { Artisans, Home, Products } from "./pages"
+import Layout from "./layouts/Layout"
 
-function App() {
+export default function App() {
   return (
-    <>
-      <Header />
-    </>
+    <Routes>
+      <Route path="" element={<Layout />} >
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/artisans" element={<Artisans />} />
+      </Route>
+    </Routes>
   )
 }
-
-export default App
