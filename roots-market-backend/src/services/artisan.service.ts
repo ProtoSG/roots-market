@@ -37,6 +37,25 @@ export const readArtisanById = async(id: number) => {
   return rows[0]; 
 }
 
+export const readLastedArtisan = async() => {
+  const query = `
+    SELECT
+        a.artisanId,
+        a.name,
+        a.testimony,
+        a.profileImageUrl
+    FROM Artisan a 
+    ORDER BY a.artisanId DESC 
+    LIMIT 1;
+  `
+
+  const { rows } = await connection.execute({
+    sql: query
+  })
+
+  return rows[0]
+}
+
 export const foundArtisanByEmail = async(email: string) => {
   const query = `
     SELECT * FROM Artisan WHERE email = ?;

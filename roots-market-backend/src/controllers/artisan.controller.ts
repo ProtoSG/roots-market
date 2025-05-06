@@ -1,6 +1,6 @@
 import {type Request, type Response} from 'express'
 import type { Artisan } from '../models/artisan.model.ts';
-import { createArtisan, foundArtisanByEmail, readArtisanById } from '../services/artisan.service.ts';
+import { createArtisan, foundArtisanByEmail, readArtisanById, readLastedArtisan } from '../services/artisan.service.ts';
 import bcrypt from 'bcryptjs';
 import { createAccessToken } from '../libs/jwt.ts';
 
@@ -67,5 +67,17 @@ export const getArtisanById = async(req: Request, res: Response) => {
     res.status(200).json(artisan);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener el artesano" });
+  }
+}
+
+export const getLastedArtisan = async(_: Request, res: Response) => {
+  try{
+    const artisan = await readLastedArtisan()
+    
+    res.json(artisan)
+  } catch (error) {
+    res.status(500).json({
+      message: "Error al obtener el artesano"
+    })
   }
 }
