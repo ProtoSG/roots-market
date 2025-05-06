@@ -8,4 +8,6 @@ Connection: keep-alive
 Content-Type: application/json; charset=utf-8
 User-Agent: VRC
 
-GET /1
+#GET /1
+
+GET /last
