@@ -1,6 +1,6 @@
 import type { Request, Response } from "express"
 import { Product } from "../models/product.model"
-import { createProduct, readProductById, readProducts, updateProductById } from "../services/product.service"
+import { createProduct, readProductById, readProducts, readRankingProduct, updateProductById } from "../services/product.service"
 
 export const registerProduct = async(req: Request, res: Response ) => {
   try {
@@ -67,6 +67,18 @@ export const getProductById = async(req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({
       message: "Error al obtener el Producto"
+    })
+  }
+}
+
+export const getRankingProducts = async(_: Request, res: Response) => {
+  try {
+    const products = await readRankingProduct()
+
+    res.json(products)
+  } catch (error) {
+    res.status(500).json({
+      message: "Error al obtener los Productos"
     })
   }
 }
