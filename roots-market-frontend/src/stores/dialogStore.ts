@@ -1,20 +1,11 @@
 import { create } from "zustand";
-import { Product } from "../models/product.model";
 
-interface DialogState<T> {
-  item: T | null
+interface DialogState {
   isOpen: boolean
-
-  setItem: (item: T) => void;
-  setOpen: () => void;
+  setOpen: (isOpen: boolean) => void;
 }
 
-export const createDialogStore = <T>() => create<DialogState<T>>((set) => ({
-  item: null,
+export const useDialogStore = create<DialogState>((set) => ({
   isOpen: false,
-
-  setItem: (item: T) => set({item}),
-  setOpen: () => set((state) => ({isOpen: !state.isOpen}))
+  setOpen: (isOpen: boolean) => set({isOpen})
 }))
-
-export const useProductDialogStore = createDialogStore<Product>()
