@@ -1,7 +1,6 @@
 import { use } from "react"
 import { promiseCache } from "../utils/cache"
 
-
 interface Props<T> {
   fn: () => Promise<T[]>
   key: string
