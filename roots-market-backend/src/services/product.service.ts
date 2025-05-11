@@ -136,6 +136,53 @@ export const readRankingProduct = async() => {
   }
 }
 
+export const readRankingProductById = async(id: number) => {
+  try {
+    const query = `
+      SELECT 
+          p.productId,
+          p.name,
+          p.price,
+          p.story,
+          p.categoryId,
+          p.soldCount,
+          a.artisanId,
+          a.name AS artisanName,
+          (
+              SELECT json_group_array(DISTINCT t.name)
+              FROM ProductTag pt
+              JOIN Tag t ON t.tagId = pt.tagId
+              WHERE pt.productId = p.productId
+          ) AS tags,
+          (
+              SELECT json_group_array(DISTINCT i.imageUrl)
+              FROM Image i
+              WHERE i.productId = p.productId
+          ) AS images
+      FROM Product p
+      JOIN Artisan a ON a.artisanId = p.artisanId
+      WHERE a.artisanId = ?
+      ORDER BY p.soldCount DESC 
+      LIMIT 4;
+    `
+
+    const { rows } = await connection.execute({
+      sql: query,
+      args: [id],
+    })
+
+    const parsedRows = rows.map((row) => ({
+      ...row,
+      tags: parseJsonArray(row.tags),
+      images: parseJsonArray(row.images),
+    }))
+  
+    return parsedRows
+  } catch (error) {
+    throw new Error("Error al leer el producto")
+  }
+}
+
 export const updateProductById = async(id: number, product: Product) => {
 try {
     const query = `

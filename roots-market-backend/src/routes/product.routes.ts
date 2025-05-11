@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validateSchema } from "../middlewares/validator.middleware";
 import { productSchema } from "../schemas/product.schema";
-import { getProductById, getProducts, getRankingProducts, putProductById, registerProduct } from "../controllers/product.controller";
+import { getProductById, getProducts, getRankingProducts, getRankingProductsById, putProductById, registerProduct } from "../controllers/product.controller";
 
 const router = Router()
 
@@ -40,6 +40,7 @@ router.post("/product", validateSchema(productSchema), registerProduct)
 
 router.get("/product", getProducts)
 router.get("/product/ranking", getRankingProducts)
+router.get("/product/ranking/:id", getRankingProductsById)
 router.get("/product/:id", getProductById)
 router.put("/product", validateSchema(productSchema), putProductById)
 
