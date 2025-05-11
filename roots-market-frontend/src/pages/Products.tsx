@@ -1,14 +1,13 @@
-import { useProduct } from "../hooks/useProduct";
+import { ListProducts } from "../sections/Products/ListProducts";
+import { MainContainer, ModalProduct } from "../components/UI";
+import { FilterProductsContianer } from "../sections/Products";
 
 export function Products(){
-  const data = useProduct()
-
   return(
-    <div>
-        {data.map((product) => (
-          <p key={product.id}>{product.name}</p>
-        ))}
-        {/* <ListProducts productsPromise={productPromise} /> */}
-    </div>
+    <MainContainer className="flex-col lg:flex-row gap-12">
+      <FilterProductsContianer />
+      <ListProducts />
+      <ModalProduct />
+    </MainContainer>
   )
 }
