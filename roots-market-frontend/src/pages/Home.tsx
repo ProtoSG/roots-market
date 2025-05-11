@@ -1,13 +1,15 @@
-import { ModalProduct } from "../components/UI";
+import { MainContainer } from "../components/UI";
+import { useProductRanking } from "../hooks/useProduct";
 import { Hero, FeaturedProducts, ArtisanHighlight } from "../sections/Home";
 
 export function Home(){
+  const products = useProductRanking()
+  
   return(
-    <main className="flex flex-col gap-24">
+    <MainContainer className="flex-col gap-24 ">
       <Hero />
-      <FeaturedProducts />
+      <FeaturedProducts products={products} />
       <ArtisanHighlight />
-      <ModalProduct />
-    </main>
+    </MainContainer>
   )
 }
