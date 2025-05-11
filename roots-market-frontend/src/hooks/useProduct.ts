@@ -26,3 +26,15 @@ export const useProductRanking = (): Product[] => {
 
   return data
 }
+
+export const useProductRankingById = (id: number): Product[] => {
+  const data = useQuery<Product>({
+    fn: () => fetchData({
+      url: `product/ranking/${id}`,
+      jsonAdapter: productAdapter
+    }),
+    key: `productRankingById-${id}`
+  })
+
+  return data
+}
