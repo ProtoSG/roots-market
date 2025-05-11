@@ -1,6 +1,6 @@
 import {type Request, type Response} from 'express'
 import type { Artisan } from '../models/artisan.model.ts';
-import { createArtisan, foundArtisanByEmail, readArtisanById, readLastedArtisan } from '../services/artisan.service.ts';
+import { createArtisan, foundArtisanByEmail, readArtisanById, readArtisans, readLastedArtisan } from '../services/artisan.service.ts';
 import bcrypt from 'bcryptjs';
 import { createAccessToken } from '../libs/jwt.ts';
 
@@ -47,6 +47,23 @@ export const registerNewArtisan = async(req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Error al crear el artesano" });
+  }
+}
+
+export const getArtisans = async(_: Request, res: Response) => {
+  try {
+    const artisans = await readArtisans()
+    console.log("ARTISANS: \n", artisans)
+
+    if (!artisans) return res.status(404).json({
+      message: "No hay Artesanos"
+    })
+
+    res.status(200).json(artisans)
+  } catch (error) {
+    res.status(500).json({
+      message: "Error al obtener Artesanos" 
+    })
   }
 }
 

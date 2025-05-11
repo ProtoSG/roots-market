@@ -1,5 +1,6 @@
 import { connection } from "../connection.ts";
 import type { Artisan } from "../models/artisan.model.ts";
+import { parseJsonArray } from "../utils/parseJsonArray.utils.ts";
 
 export const createArtisan = async(artisan: Artisan) => {
   const query = `
@@ -22,6 +23,38 @@ export const createArtisan = async(artisan: Artisan) => {
   });
 
   return { id : lastInsertRowid}
+}
+
+export const readArtisans = async() => {
+  const query = `
+    SELECT 
+        a.artisanId,
+        a.name,
+        a.bio,
+        a.location,
+        a.profileImageUrl,
+        json_group_array(
+            json_object(
+                'socialNetworkId', sn.socialNetworkId,
+                'type', sn.type,
+                'URL', sn.URL
+            )
+        ) AS socialNetworks
+    FROM Artisan a
+    INNER JOIN SocialNetwork sn ON sn.artisanId = a.artisanId
+    GROUP BY a.artisanId;
+  `
+
+  const { rows } = await connection.execute({
+    sql: query
+  })
+
+  const parsedRows = rows.map((row) => ({
+    ...row,
+    socialNetworks: parseJsonArray(row.socialNetworks),
+  }))
+
+  return parsedRows
 }
 
 export const readArtisanById = async(id: number) => {
