@@ -9,6 +9,7 @@ export async function fetchData<T, Raw>({
   url,
   jsonAdapter
 }: Props<T, Raw>): Promise<T[]> {
+  console.log("URL: ", url)
   const response = await fetch(`${api}/${url}`)
   
   if (!response.ok) {
