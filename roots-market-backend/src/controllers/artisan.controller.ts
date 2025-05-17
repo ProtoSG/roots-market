@@ -6,7 +6,15 @@ import { createAccessToken } from '../libs/jwt.ts';
 
 export const registerNewArtisan = async(req: Request, res: Response) => {
   try {
-    const { name, username, password, bio, location, profileImageUrl, email } = req.body;
+    const {
+      name,
+      username, 
+      password,
+      bio,
+      location,
+      profileImageURL,
+      email,
+    } = req.body;
 
     const artisanFound = await foundArtisanByEmail(email);
 
@@ -23,9 +31,8 @@ export const registerNewArtisan = async(req: Request, res: Response) => {
       password: passwordHash,
       bio,
       location,
-      profileImageUrl,
-      email,
-      createdAt: new Date()
+      profileImageURL,
+      email
     };
 
     const newArtisan = await createArtisan(artisanData);
@@ -34,10 +41,12 @@ export const registerNewArtisan = async(req: Request, res: Response) => {
       id: newArtisan.id,
     });
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("token", token, {
-      httpOnly: process.env.NODE_ENV !== "development",
-      secure: true,
-      sameSite: "none",
+      httpOnly: isProduction,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     });
 
     res.json({
@@ -46,20 +55,19 @@ export const registerNewArtisan = async(req: Request, res: Response) => {
       email:email,
     });
   } catch (error) {
-    res.status(500).json({ message: "Error al crear el artesano" });
+    res.status(500).json({ message: "Error al T crear el artesano" });
   }
 }
 
 export const getArtisans = async(_: Request, res: Response) => {
   try {
     const artisans = await readArtisans()
-    console.log("ARTISANS: \n", artisans)
 
     if (!artisans) return res.status(404).json({
       message: "No hay Artesanos"
     })
 
-    res.status(200).json(artisans)
+    res.json(artisans)
   } catch (error) {
     res.status(500).json({
       message: "Error al obtener Artesanos" 
@@ -90,7 +98,11 @@ export const getArtisanById = async(req: Request, res: Response) => {
 export const getLastedArtisan = async(_: Request, res: Response) => {
   try{
     const artisan = await readLastedArtisan()
-    
+ 
+    if (!artisan) return res.status(404).json({
+      message: "No hay Artesanos"
+    })
+   
     res.json(artisan)
   } catch (error) {
     res.status(500).json({
