@@ -1,11 +1,13 @@
 import { connection } from "../connection.ts";
 import type { Artisan } from "../models/artisan.model.ts";
+import type { AuthLogin } from "../models/auth.model.ts";
 import { parseJsonArray } from "../utils/parseJsonArray.utils.ts";
+import { toInt } from "../utils/toInt.utils.ts";
 
 export const createArtisan = async(artisan: Artisan) => {
   const query = `
-    INSERT INTO Artisan (name, username, password, bio, location, profileImageUrl, email, createdAt)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO Artisan (name, username, password, bio, location, profileImageUrl, email)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
   
   const { lastInsertRowid } = await connection.execute({
@@ -16,13 +18,12 @@ export const createArtisan = async(artisan: Artisan) => {
       artisan.password,
       artisan.bio,
       artisan.location,
-      artisan.profileImageUrl,
+      artisan.profileImageURL,
       artisan.email,
-      artisan.createdAt
     ]
   });
 
-  return { id : lastInsertRowid}
+  return { id : toInt(lastInsertRowid)}
 }
 
 export const readArtisans = async() => {
@@ -104,3 +105,26 @@ export const foundArtisanByEmail = async(email: string) => {
 
   return false
 }
+
+export const foundArtisanByUsername = async(username: string): Promise<AuthLogin|null>  => {
+  const query = `
+    SELECT artisanId, username, password FROM Artisan WHERE username = ?;
+  `
+  const { rows }: any = await connection.execute(({
+    sql: query,
+    args: [username]
+  }))
+
+  if (!rows || rows.length === 0) {
+    return null
+  }
+
+  const newUser: AuthLogin = {
+    id: toInt(rows[0].artisanId),
+    username: rows[0].username,
+    password: rows[0].password,
+  }
+
+  return newUser
+}
+
