@@ -10,6 +10,7 @@ import orderDetailRoutes from "./routes/orderDetail.routes.ts"
 import productRoutes from "./routes/product.routes.ts"
 import socialNetworkRoutes from "./routes/socialNetwork.routes.ts"
 import tagRoutes from "./routes/tag.routes.ts"
+import authRoutes from "./routes/auth.routes.ts"
 import { FRONTEND_URL } from "./config.ts"
 import { swaggerSpec, swaggerUI } from "./swagger.ts"
 
@@ -34,5 +35,6 @@ app.use("/api", orderDetailRoutes)
 app.use("/api", productRoutes)
 app.use("/api", socialNetworkRoutes)
 app.use("/api", tagRoutes)
+app.use("/api/auth", authRoutes)
 
 export default app
