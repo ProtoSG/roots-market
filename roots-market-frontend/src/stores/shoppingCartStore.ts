@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { Product } from "../models/product.model";
 
-interface ItemState {
+export interface ItemState {
   product: Product
   quantity: number 
   subTotal: number
@@ -11,6 +11,9 @@ interface State {
   items: ItemState[]
   total: number
   count: number
+
+  incrementQuantity: (item: ItemState) => void 
+  decrementQuantity: (item: ItemState) => void
 
   addItem: (item: ItemState) => void
   removeItem: (id: number) => void
@@ -54,7 +57,8 @@ export const useShoppingCartStore = create<State>((set) => ({
 
       return {
         items: updatedItems,
-        total: calculateTotal(updatedItems)
+        total: calculateTotal(updatedItems),
+        count: state.count
       }
     }
   ),
@@ -66,7 +70,8 @@ export const useShoppingCartStore = create<State>((set) => ({
 
     return {
       items: updateItems,
-      total: calculateTotal(updateItems)
+      total: calculateTotal(updateItems),
+      count: updateItems.length,
     }
   }),
 
@@ -74,6 +79,44 @@ export const useShoppingCartStore = create<State>((set) => ({
       items: [],
       total: 0,
       count: 0
-    })
+    }),
 
+  incrementQuantity: (item) =>
+  set((state) => {
+    const updatedItems = state.items.map((i) =>
+      i.product.id === item.product.id
+        ? {
+            ...i,
+            quantity: i.quantity + 1,
+            subTotal: (i.quantity + 1) * i.product.price,
+          }
+        : i
+    );
+
+    return {
+      items: updatedItems,
+      total: calculateTotal(updatedItems),
+    };
+  }),
+
+decrementQuantity: (item) =>
+  set((state) => {
+    const updatedItems = state.items
+      .map((i) =>
+        i.product.id === item.product.id
+          ? {
+              ...i,
+              quantity: i.quantity - 1,
+              subTotal: (i.quantity - 1) * i.product.price,
+            }
+          : i
+      )
+      .filter((i) => i.quantity > 0);
+
+    return {
+      items: updatedItems,
+      total: calculateTotal(updatedItems),
+      count: updatedItems.length,
+    };
+  }),
 }))

@@ -5,7 +5,11 @@ interface DialogState {
   setOpen: (isOpen: boolean) => void;
 }
 
-export const useDialogStore = create<DialogState>((set) => ({
+const createDialogStore = () => create<DialogState>((set) => ({
   isOpen: false,
   setOpen: (isOpen: boolean) => set({isOpen})
 }))
+
+export const useProductDiaglogStore = createDialogStore()
+export const useArtisanDialogStore = createDialogStore()
+export const uselogginDialogStore = createDialogStore()
