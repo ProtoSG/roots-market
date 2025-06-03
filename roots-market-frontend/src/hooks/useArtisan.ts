@@ -6,7 +6,7 @@ import { useQuery } from "./useQuery"
 export const useLastArtisan = () => {
   const data = useQuery({
     fn: () => fetchData<ArtisanTestimony, ArtisanTestimonyResponse>({
-      url: 'artisan/last',
+      url: 'artisans/last',
       jsonAdapter: artisanTestimonyAdapter
     }),
     key: 'artisanLast'
@@ -18,7 +18,7 @@ export const useLastArtisan = () => {
 export const useArtisans = () => {
   const artisans = useQuery({
     fn: () => fetchData<Artisan, ArtisanResponse>({
-      url: 'artisan',
+      url: 'artisans',
       jsonAdapter: artisanAdapter
     }),
     key: 'artisans'
