@@ -1,5 +1,5 @@
 import { ListProducts } from "../sections/Products/ListProducts";
-import { MainContainer, ModalProduct } from "../components/UI";
+import { MainContainer } from "../components/UI";
 import { FilterProductsContianer } from "../sections/Products";
 
 export function Products(){
@@ -7,7 +7,6 @@ export function Products(){
     <MainContainer className="flex-col lg:flex-row gap-12">
       <FilterProductsContianer />
       <ListProducts />
-      <ModalProduct />
     </MainContainer>
   )
 }
