@@ -1,5 +1,5 @@
 import { Product } from "../../models/product.model"
-import { useDialogStore } from "../../stores/dialogStore"
+import { useProductDiaglogStore } from "../../stores/dialogStore"
 import { useProductStore } from "../../stores/itemStore"
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export function CardProduct({product}: Props){
-  const { setOpen } = useDialogStore()
+  const { setOpen } = useProductDiaglogStore()
   const { setItem } = useProductStore()
 
   const handleOpenDialog = () => {

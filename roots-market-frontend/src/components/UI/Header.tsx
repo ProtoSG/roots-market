@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { LinkItem } from "./LinkItem"
 import { ShoppingButton } from "./ShoppingButton"
 import { ShoppingCart } from "./ShoppingCart"
+import { LoginButton } from "./LogginButton"
 
 interface LinkItem {
   name: string
@@ -37,10 +38,13 @@ export function Header() {
               ))}
           </ul>
         </nav>
-        <ShoppingButton  setIsOpen={setIsOpen}/>
-        {isOpen && 
-          <ShoppingCart isOpen={isOpen} setIsOpen={setIsOpen} cartRef={cartRef} />
-        }
+        <div className="flex items-center gap-4">
+          <LoginButton />
+          <ShoppingButton  setIsOpen={setIsOpen}/>
+          {isOpen && 
+            <ShoppingCart isOpen={isOpen} setIsOpen={setIsOpen} cartRef={cartRef} />
+          }
+        </div>
       </section>
     </header>
   )

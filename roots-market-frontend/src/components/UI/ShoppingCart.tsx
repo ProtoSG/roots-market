@@ -2,6 +2,7 @@ import { RefObject, useEffect } from "react";
 import { useShoppingCartStore } from "../../stores/shoppingCartStore";
 import { PrimaryButton } from "./Button";
 import { UnderlineText } from "./UnderlineText";
+import { useNavigate } from "react-router-dom";
 
 interface Props{
   isOpen: boolean 
@@ -11,7 +12,9 @@ interface Props{
 
 export function ShoppingCart({isOpen, setIsOpen, cartRef}: Props) {
   const { items, total, clear } = useShoppingCartStore()
-  
+
+  const navigate = useNavigate()
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if(cartRef.current && !cartRef.current.contains(event.target as Node)) {
@@ -43,7 +46,9 @@ export function ShoppingCart({isOpen, setIsOpen, cartRef}: Props) {
       </div>
       <hr />
       <section className="flex flex-col  gap-3 flex-1 overflow-y-scroll">
-        {items.map((item) => (
+        {items.length === 0 ? (
+          <p className="text-center">No hay productos en el carrito</p>
+        ) : items.map((item) => (
           <div 
             key={item.product.id}
             className="flex items-center gap-4"
@@ -60,7 +65,7 @@ export function ShoppingCart({isOpen, setIsOpen, cartRef}: Props) {
         <span>S/ {total.toFixed(2)}</span>
       </div>
       <PrimaryButton
-        onClick={() => {}}
+        onClick={() => navigate("/shopping-cart")}
         className="w-full"
       >
         Ver Carrito

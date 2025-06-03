@@ -1,9 +1,12 @@
 import { useProductStore } from "../../stores/itemStore"
+import { useQuantityStore } from "../../stores/quantityStore"
+import { AddShoppingCartButton } from "../Products"
 import { ListTags } from "./ListTags"
 import { QuantitySelector } from "./QuantitySelector"
 
 export function ProductInfo(){
   const { item: product } = useProductStore()
+  const { quantity, increment, decrement } = useQuantityStore()
 
   if (!product) return <p>No hay datos</p>
 
@@ -31,7 +34,14 @@ export function ProductInfo(){
               <p>S/ {product.price.toFixed(2)}</p>
             </div>
           </div>
-          <QuantitySelector product={product} />
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-12">
+            <QuantitySelector 
+              quantity={quantity}
+              increment={increment}
+              decrement={decrement}
+            />
+            <AddShoppingCartButton product={product} />
+          </div>
         </article>
       </div>
       <div className="flex flex-col gap-4">
