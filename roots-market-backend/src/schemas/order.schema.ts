@@ -1,12 +1,19 @@
 import { z } from "zod";
+import { orderDetailSchema } from "./orderDetail.schema";
+
+export enum StatusOrder {
+  PENDING   = "pending",
+  PAID      = "paid",
+  SHIPPED   = "shipped",
+  DELIVERED = "delivered",
+  CANCELLED = "cancelled",
+}
 
 export const orderSchema = z.object({
-  orderId: z.number().optional(),
-  total: z.number().positive("El total debe ser mayor que 0"),
-  status: z.enum(["pending", "paid", "shipped", "delivered", "cancelled"]).optional(),
-  createdAt: z.date().optional(),
-});
+  status: z.nativeEnum(StatusOrder).default(StatusOrder.PENDING),
+  ordersDetails: z.array(orderDetailSchema)
+})
 
 export const orderStatusSchema = z.object({
-  status: z.enum(["pending", "paid", "shipped", "delivered", "cancelled"]),
+  status: z.nativeEnum(StatusOrder)
 })

@@ -1,16 +1,9 @@
 import { z } from "zod";
 
-export const artisanSchema = z.object({
-  artisanId: z.number().optional(),
+export const artisanBaseSchema = z.object({
   name: z.string({
     required_error: "El campo 'name' es requerido"
   }).min(1, "El nombre es obligatorio"),
-  username: z.string({
-    required_error: "El campo 'username' es requerido"
-  }).min(1, "El nombre de usuario es obligatorio").max(50),
-  password: z.string({
-    required_error: "El campo 'password' es requerido"
-  }).min(8, "La contraseña debe tener al menos 8 caracteres"),
   bio: z.string({
     required_error: "El campo 'bio' es requerido"
   }).min(10, "La biografía debe tener al menos 10 caracteres"),
@@ -23,5 +16,26 @@ export const artisanSchema = z.object({
   email: z.string({
     required_error: "El campo 'email' es requerido"
   }).email("El correo electrónico debe ser válido"),
-  createdAt: z.date().optional(),
+})
+
+export const artisanSchema = artisanBaseSchema.extend({
+  artisanId: z.number().optional(),
+})
+
+export const artisanCreateSchema = artisanBaseSchema.extend({
+  username: z.string({
+    required_error: "El campo 'username' es requerido"
+  }).min(1, "El nombre de usuario es obligatorio").max(50),
+  password: z.string({
+    required_error: "El campo 'password' es requerido"
+  }).min(8, "La contraseña debe tener al menos 8 caracteres"),
+  testimony: z.string({
+    required_error: "El campo 'testimony' es requerido" 
+  })
 });
+
+export const artisanUpdateSchema =  artisanBaseSchema.extend({
+  username: z.string({
+    required_error: "El campo 'username' es requerido"
+  }).min(1, "El nombre de usuario es obligatorio").max(50),
+})
