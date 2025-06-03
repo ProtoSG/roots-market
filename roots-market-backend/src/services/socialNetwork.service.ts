@@ -24,25 +24,47 @@ export const createSocialNetwork = async (socialNetwork: SocialNetwork) => {
   }
 }
 
-export const updateSocialNetworkById = async (id: number, socialNetwork: SocialNetworkUpdate) => {
+export const updateSocialNetworkById = async (id: number, artisanId: number, socialNetwork: SocialNetworkUpdate) => {
   try {
     const query = `
       UPDATE SocialNetwork
       SET type = ?, url = ?
-      WHERE socialNetworkId = ?
+      WHERE 
+        socialNetworkId = ? 
+        AND artisanId = ?
     `;
 
     const result = await connection.execute({
       sql: query,
-      args: [socialNetwork.type, socialNetwork.url, id],
+      args: [socialNetwork.type, socialNetwork.url, id, artisanId],
     });
 
-    if (result.rowsAffected === 0) {
-      throw new Error(`Red social con ID ${id} no encontrada`);
-    }
+    if (result.rowsAffected === 0) return null
 
-    return { message: "Red social actualizada exitosamente" };
+    return id
   } catch (error) {
     throw new Error("Error al actualizar la red social");
+  }
+}
+
+export const deleteSocialNetwork = async(snId: number, artisanId: number) => {
+  try {
+    const query = `
+      DELETE FROM SocialNetwork
+      WHERE 
+        socialNetworkId = ?
+        AND artisanId = ?
+    `
+    const { rowsAffected } = await connection.execute({
+      sql: query,
+      args: [snId, artisanId]
+    })
+
+    if (rowsAffected === 0) return null
+
+    return snId
+  } catch (error) {
+    console.error("Error en la base de datos: ", error.message)
+    throw new Error("Error en la base de datos al eliminar la red social")
   }
 }

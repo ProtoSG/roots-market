@@ -1,22 +1,76 @@
+import { sql } from "bun";
 import { connection } from "../connection";
-import type { Order, StatusOrder } from "../models/order.model";
-import { toInt } from "../utils/toInt.utils";
+import type { Order } from "../models/order.model";
+import type { StatusOrder } from "../schemas/order.schema";
 
 export const createOrder = async(order: Order) => {
- try {
-    const query = `
-      INSERT INTO Orders (total, status, createdAt)
-      VALUES (?, ?, ?)
+  const transaction = await connection.transaction("write")
+  try {
+    const queryInsertOrder = `
+      INSERT INTO Orders (status)
+      VALUES (?)
     `;
 
-    const {lastInsertRowid} = await connection.execute({
-      sql: query,
-      args: [order.total, order.status, order.createdAt],
+    const {lastInsertRowid: orderInsertId} = await transaction.execute({
+      sql: queryInsertOrder,
+      args: [order.status],
     });
+    
+    const orderId = Number(orderInsertId)
+    
+    for (const orderD of order.ordersDetails) {
+      const existing = await transaction.execute({
+        sql: `SELECT price FROM Product WHERE productId = ?;`,
+        args: [orderD.productId]
+      }).then(r => r.rows?.[0] as { price: number } | undefined)
+      
+      if (!existing) {
+        throw new Error(`No existe ningun Product con ID = ${orderD.productId}`)
+      }
+      
+      const price = existing.price
 
-    return { orderId: toInt(lastInsertRowid), message: "Pedido creado exitosamente" };
+     await transaction.execute({
+        sql: `
+          INSERT INTO OrderDetail (orderId, productId, quantity, price)
+          VALUES (?, ?, ?, ?)
+        `,
+        args: [orderId, orderD.productId, orderD.quantity, price]
+      })
+    }
+
+    const orderExisting = await transaction.execute({
+      sql: `
+        SELECT SUM(subTotal) as total 
+        FROM OrderDetail 
+        WHERE orderId = ?
+      `,
+      args: [orderId]
+    }).then(r => r.rows?.[0] as { total: number | null} | undefined)
+
+    if(!orderExisting) {
+      throw new Error(`Order con ID ${orderId} no existe`)
+    }
+
+    const total = orderExisting.total || 0
+
+    await transaction.execute({
+      sql: `
+        UPDATE Orders 
+        SET total = ? 
+        WHERE orderId = ?
+      `, 
+      args: [total, orderId]
+    })
+
+    await transaction.commit()
+
+    return orderId
   } catch (error) {
-    throw new Error("Error al crear el pedido");
+    await transaction.rollback()
+    throw new Error("Error en la base de datos");
+  } finally {
+    transaction.close()
   }
 }
 

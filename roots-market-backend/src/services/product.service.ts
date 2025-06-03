@@ -1,17 +1,21 @@
-import type { Product } from "../models/product.model";
+import type { Product, ProductCreate, ProductFilter, ProductUpdate } from "../models/product.model";
 import { connection } from "../connection"
 import { toInt } from "../utils/toInt.utils";
 import { parseJsonArray } from "../utils/parseJsonArray.utils";
 
-export const createProduct = async(product: Product)=> {
+export const createProduct = async(product: ProductCreate)=> {
+  const transaction = await connection.transaction("write")
+
   try {
-    const query = `
-      INSERT INTO Product (name, story, price, stock, artisanId, categoryId, createdAt, updatedAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    // Insertar Producto Nuevo
+    const queryInsertProduct = `
+      INSERT INTO Product 
+        (name, story, price, stock, artisanId, categoryId)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
 
-    const { lastInsertRowid } = await connection.execute({
-      sql: query,
+    const { lastInsertRowid } = await transaction.execute({
+      sql: queryInsertProduct,
       args: [
         product.name,
         product.story,
@@ -19,77 +23,399 @@ export const createProduct = async(product: Product)=> {
         product.stock,
         product.artisanId,
         product.categoryId,
-        product.createdAt,
-        product.updatedAt
       ],
     });
+    const productId = Number(lastInsertRowid)
+     
+    // Insertar las imagenes
+    const queryInsertImages = `
+      INSERT INTO Image (productId, imageUrl)
+      VALUES (?, ?)
+    `
+    
+    for (const url of product.images) {
+      await transaction.execute({
+        sql: queryInsertImages,
+        args: [productId, url]
+      })
+    }
+      
+    // Insertar los tags
+
+    const querySelectTag = `
+      SELECT tagId FROM Tag 
+      WHERE name = ? AND artisanId = ? 
+    `  
+    const queryInsertTag = `
+      INSERT INTO Tag (artisanId, name)
+      VALUES (?, ?)
+    `
+    const queryInsertProductTag = `
+      INSERT OR IGNORE INTO ProductTag (productId, tagId)
+      VALUES (?, ?)
+    `
+
+    for (const tagName of product.tags) {
+      // Verificamos si ya existe el tag
+      const existing = await transaction
+        .execute({
+          sql: querySelectTag,
+          args: [tagName, product.artisanId]
+        })
+        .then(r => r.rows?.[0] as { tagId: number } | undefined);
+
+      let tagId: number 
+      if (existing) {
+        tagId = existing.tagId
+      } else {
+        // Creamos nu nuevo Tag
+        const { lastInsertRowid: newTagId }  = await transaction.execute({
+          sql: queryInsertTag,
+          args: [product.artisanId, tagName]
+        })
+        tagId = Number(newTagId)
+      }
+
+      // Por último la asiciamos en la tabla ProductTag
+      await transaction.execute({
+        sql: queryInsertProductTag,
+        args: [productId, tagId]
+      })
+    }
+
+    // Si la transaccion salio bien => la confirmamos
+    await transaction.commit()
 
     return { 
-      productId: toInt(lastInsertRowid),
+      productId: productId,
       message: "Producto creado exitosamente"
     };
   } catch (error) {
+    // Si algo falla realizamos un rollback
+    await transaction.rollback();
     throw new Error("Error al crear el producto");
+  } finally {
+    transaction.close();
   }
 }
 
-export const readProducts = async() => {
+export const updateProduct = async(id: number, artisanId: number, product: ProductUpdate) => {
+  const transaction = await connection.transaction("write")
+
+  try {
+    // Actualizamos el producto
+    const queryUpdateProduct = `
+      UPDATE Product
+      SET 
+        name        = ?,
+        story       = ?,
+        price       = ?, 
+        stock       = ?, 
+        categoryId  = ?, 
+        updatedAt   = CURRENT_TIMESTAMP
+      WHERE 
+        productId   = ?
+        AND 
+        artisanId   = ?
+    `;
+
+    const { rowsAffected } = await transaction.execute({
+      sql: queryUpdateProduct,
+      args: [
+        product.name,
+        product.story,
+        product.price,
+        product.stock,
+        product.categoryId,
+        id,
+        artisanId
+      ],
+    });
+
+    if (rowsAffected === 0) return null
+    // Eliminiamos las images si el usuario asi lo decidio
+    if (product.imagesIdDelete.length > 0) {
+      await transaction.execute({
+        sql: `
+          DELETE FROM Image
+          WHERE imageId IN (${product.imagesIdDelete.map(() => "?").join(",")})
+        `,
+        args: [...product.imagesIdDelete],
+      })
+    }
+
+    // Actualizamos las imágenes
+    const queryUpdateImage = `
+      UPDATE Image 
+      SET imageUrl = ?
+      WHERE imageId = ?
+    `
+    const queryInsertImage = `
+      INSERT INTO Image (productId, imageUrl)
+      VALUES (?, ?)
+    `
+
+    for (const image of product.images) {
+      if (image.imageId !== 0) {
+        await transaction.execute({
+          sql: queryUpdateImage,
+          args: [image.imageUrl, image.imageId]
+        })
+      } else {
+        await transaction.execute({
+          sql: queryInsertImage,
+          args: [id, image.imageUrl]
+        })
+      }
+    }
+
+    // Eliminamos los tags vinculado al producto, mas no los Tags creados
+    if (product.tagsIdDelete.length > 0) {
+      await transaction.execute({
+        sql: `
+          DELETE FROM ProductTag
+          WHERE productId = ?
+            AND tagId IN (${product.tagsIdDelete.map(() => "?").join(",")})
+        `,
+        args: [id, ...product.tagsIdDelete],
+      });
+    }
+
+    // Actualizamos los tags 
+    const querySelectTag = `
+      SELECT tagId FROM Tag 
+      WHERE name = ? AND artisanId = ? 
+    `  
+    const queryInsertTag = `
+      INSERT INTO Tag (artisanId, name)
+      VALUES (?, ?)
+    `
+    const queryInsertProductTag = `
+      INSERT OR IGNORE INTO ProductTag (productId, tagId)
+      VALUES (?, ?)
+    `
+
+    for (const tagName of product.tags) {
+      // Verificamos si ya existe el tag
+      const existing = await transaction
+        .execute({
+          sql: querySelectTag,
+          args: [tagName, artisanId]
+        })
+        .then(r => r.rows?.[0] as { tagId: number } | undefined);
+
+      let tagId: number 
+      if (existing) {
+        tagId = existing.tagId
+      } else {
+        // Creamos nu nuevo Tag
+        const { lastInsertRowid: newTagId }  = await transaction.execute({
+          sql: queryInsertTag,
+          args: [artisanId, tagName]
+        })
+        tagId = Number(newTagId)
+      }
+
+      // Por último la asiciamos en la tabla ProductTag
+      await transaction.execute({
+        sql: queryInsertProductTag,
+        args: [id, tagId]
+      })
+    }
+    
+    
+    await transaction.commit()
+
+    return id;
+  } catch (error) {
+    await transaction.rollback()
+    throw new Error("Error al actualizar el producto");
+  } finally {
+    transaction.close()
+  }
+}
+
+export const deleteProduct = async(productId: number, artisanId: number) => {
+  try {
+    const query = `
+      UPDATE Product
+      SET isDeleted = 1
+      WHERE productId = ?
+      AND artisanId = ?;
+    `   
+    const {rowsAffected} = await connection.execute({
+      sql: query,
+      args: [productId, artisanId]
+    })
+
+    if (rowsAffected === 0) return null 
+
+    return productId
+  } catch (error) {
+    console.error("Error en la base de datos al eliminar el producto")
+    throw new Error(`Error en la base de datos: `, error.message)
+  }
+} 
+
+export const readProductsByArtisan = async (
+  id: number,
+  page = 1,
+  limit = 10
+) => {
+  const offset = (page - 1) * limit 
+
   try {
     const query = `
       SELECT 
           p.productId,
           p.name,
-          p.story,
           p.price,
-          p.stock,
+          p.story,
           p.categoryId,
-          a.artisanId,
-          a.name AS artisanName,
+          p.soldCount,
           (
-              SELECT json_group_array(DISTINCT t.name)
+              SELECT json_group_array(json_object(
+                'tagId', t.tagId,
+                'name', t.name
+              ))
               FROM ProductTag pt
               JOIN Tag t ON t.tagId = pt.tagId
               WHERE pt.productId = p.productId
           ) AS tags,
           (
-              SELECT json_group_array(DISTINCT i.imageUrl)
+              SELECT json_group_array(
+                json_object(
+                  'imageId', i.imageId,
+                  'imageUrl', i.imageUrl
+                )
+              )
               FROM Image i
               WHERE i.productId = p.productId
           ) AS images
       FROM Product p
-      JOIN Artisan a ON a.artisanId = p.artisanId;
-    `;
+      WHERE p.artisanId = ? AND p.isDeleted = 0
+      ORDER BY p.createdAt DESC
+      LIMIT ? OFFSET ?;
+    `
 
     const { rows } = await connection.execute({
       sql: query,
+      args: [id, limit, offset]
+    })
+
+    const data = rows.map((row) => ({
+      ...row,
+      tags: parseJsonArray(row.tags),
+      images: parseJsonArray(row.images),
+    }))
+  
+    return data
+  } catch (error) {
+    throw new Error("Error al leer el producto")
+  }
+}
+
+export const readProducts = async(
+  page = 1,
+  limit = 9,
+  filters: ProductFilter
+) => {
+  const offset = (page - 1) * limit
+
+  const whereClauses = ["p.isDeleted = 0"];
+  const args: (string | number)[] = [];
+
+  if (filters.categoryId !== null) {
+    whereClauses.push("p.categoryId = ?");
+    args.push(filters.categoryId);
+  }
+  if (filters.rangePrice[0] !== null && filters.rangePrice[1] === null) {
+    whereClauses.push("p.price >= ?");
+    args.push(filters.rangePrice[0]);
+  }
+  if (filters.rangePrice[0] === null && filters.rangePrice[1] !== null) {
+    whereClauses.push("p.price <= ?");
+    args.push(filters.rangePrice[1]);
+  }
+  if (filters.rangePrice[0] !== null && filters.rangePrice[1] !== null) {
+    whereClauses.push("p.price BETWEEN ? AND ?");
+    args.push(filters.rangePrice[0], filters.rangePrice[1]);
+  }
+  if (filters.artisanId !== null) {
+    whereClauses.push("p.artisanId = ?");
+    args.push(filters.artisanId);
+  }
+
+  const query = `
+    SELECT 
+        p.productId,
+        p.name,
+        p.price,
+        p.story,
+        p.categoryId,
+        p.soldCount,
+        a.artisanId,
+        a.name AS artisanName,
+        (
+            SELECT json_group_array(json_object(
+              'tagId', t.tagId,
+              'name', t.name
+            ))
+            FROM ProductTag pt
+            JOIN Tag t ON t.tagId = pt.tagId
+            WHERE pt.productId = p.productId
+        ) AS tags,
+        (
+            SELECT json_group_array(
+              json_object(
+                'imageId', i.imageId,
+                'imageUrl', i.imageUrl
+              )
+            )
+            FROM Image i
+            WHERE i.productId = p.productId
+        ) AS images
+    FROM Product p
+    JOIN Artisan a ON a.artisanId = p.artisanId
+    WHERE ${whereClauses.join(" AND ")}
+    ORDER BY p.createdAt DESC
+    LIMIT ? OFFSET ?;
+  `;
+
+  args.push(limit, offset);
+
+  try {
+    const { rows } = await connection.execute({
+      sql: query,
+      args,
     });
 
-    const parsedRows = rows.map((row) => ({
+    const data = rows.map((row) => ({
       ...row, 
       tags: parseJsonArray(row.tags),
       images: parseJsonArray(row.images),
     }));
 
-    return parsedRows;
+    return data;
   } catch (error) {
     throw new Error("Error al leer los productos");
   }
 } 
 
-export const readProductById = async(id: number) => {
-  try {
-    const query = "SELECT * FROM Product WHERE productId = ?";
-
-    const { rows } = await connection.execute({
-      sql: query,
-      args: [id],
-    });
-
-    return rows[0];
-  } catch (error) {
-    throw new Error("Error al leer el producto");
-  }
-}
+// export const readProductById = async(id: number) => {
+//   try {
+//     const query = "SELECT * FROM Product WHERE productId = ?";
+//
+//     const { rows } = await connection.execute({
+//       sql: query,
+//       args: [id],
+//     });
+//
+//     return rows[0];
+//   } catch (error) {
+//     throw new Error("Error al leer el producto");
+//   }
+// }
 
 export const readRankingProduct = async() => {
   try{
@@ -136,7 +462,7 @@ export const readRankingProduct = async() => {
   }
 }
 
-export const readRankingProductById = async(id: number) => {
+export const readRankingProductByArtisan = async(id: number) => {
   try {
     const query = `
       SELECT 
@@ -180,37 +506,5 @@ export const readRankingProductById = async(id: number) => {
     return parsedRows
   } catch (error) {
     throw new Error("Error al leer el producto")
-  }
-}
-
-export const updateProductById = async(id: number, product: Product) => {
-try {
-    const query = `
-      UPDATE Product
-      SET name = ?, story = ?, price = ?, stock = ?, artisanId = ?, categoryId = ?, updatedAt = ?
-      WHERE productId = ?
-    `;
-
-    const result = await connection.execute({
-      sql: query,
-      args: [
-        product.name,
-        product.story,
-        product.price,
-        product.stock,
-        product.artisanId,
-        product.categoryId,
-        product.updatedAt,
-        id,
-      ],
-    });
-
-    if (result.rowsAffected === 0) {
-      throw new Error(`Producto con ID ${id} no encontrado`);
-    }
-
-    return { message: "Producto actualizado exitosamente" };
-  } catch (error) {
-    throw new Error("Error al actualizar el producto");
   }
 }

@@ -1,44 +1,21 @@
-import type { Tag } from "../models/tag.model";
 import { connection } from "../connection";
-import { toInt } from "../utils/toInt.utils";
 
-export const createTag = async (tag: Tag) => {
-  try {
-    const query = `
-      INSERT INTO Tag (artisanId, name)
-      VALUES (?, ?)
-    `;
-
-    const { lastInsertRowid } = await connection.execute({
-      sql: query,
-      args: [tag.artisanId, tag.name],
-    });
-
-    return { 
-      tagId: toInt(lastInsertRowid),
-      message: "Etiqueta creada exitosamente"
-    };
-  } catch (error) {
-    throw new Error("Error al crear la etiqueta");
-  }
-}
-
-export const deleteTag = async(id: number) => {
+export const deleteTag = async(id: number, artisanId: number) => {
    try {
     const query = `
-      DELETE FROM Tag WHERE tagId = ?
+      DELETE FROM Tag 
+      WHERE tagId = ?
+      AND artisanId = ?;
     `;
 
     const result = await connection.execute({
       sql: query,
-      args: [id],
+      args: [id, artisanId],
     });
 
-    if (result.rowsAffected === 0) {
-      throw new Error(`Etiqueta con ID ${id} no encontrada`);
-    }
+    if (result.rowsAffected === 0) return null
 
-    return { message: "Etiqueta eliminada exitosamente" };
+    return id
   } catch (error) {
     throw new Error("Error al eliminar la etiqueta");
   }
