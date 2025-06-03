@@ -1,31 +1,5 @@
-export class SocialNetwork {
-  socialNetworkId?: number;
-  artisanId: number;
-  type: string;
-  url: string;
+import type { z } from "zod";
+import type { socialNetworkSchema, socialNetworkUpdateSchema } from "../schemas/socialNetwork.schema";
 
-  constructor(
-    artisanId: number,
-    type: string,
-    url: string,
-    socialNetworkId?: number, 
-  ) {
-    this.socialNetworkId = socialNetworkId;
-    this.artisanId = artisanId;
-    this.type = type;
-    this.url = url;
-  }
-}
-
-export class SocialNetworkUpdate {
-  type: string
-  url: string
-
-  constructor(
-    type: string,
-    url: string,
-  ) {
-    this.type = type,
-    this.url = url
-  }
-}
+export type SocialNetwork = z.infer<typeof socialNetworkSchema>
+export type SocialNetworkUpdate = z.infer<typeof socialNetworkUpdateSchema>

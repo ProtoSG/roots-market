@@ -1,33 +1,12 @@
-export class Product {
-  productId?: number;
-  name: string;
-  story: string;
-  price: number;
-  stock: number;
-  artisanId: number;
-  categoryId: number;
-  createdAt: Date;
-  updatedAt: Date;
+import type { z } from "zod";
+import type { productCreateSchema, productSchema, productUpdateSchema } from "../schemas/product.schema";
 
-  constructor(
-    name: string,
-    story: string,
-    price: number,
-    stock: number,
-    artisanId: number,
-    categoryId: number,
-    createdAt: Date = new Date(),
-    updatedAt: Date = new Date(),
-    productId?: number,
-  ) {
-    this.productId = productId;
-    this.name = name;
-    this.story = story;
-    this.price = price;
-    this.stock = stock;
-    this.artisanId = artisanId;
-    this.categoryId = categoryId;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-  }
+export type Product = z.infer<typeof productSchema>
+export type ProductCreate = z.infer<typeof productCreateSchema>
+export type ProductUpdate = z.infer<typeof productUpdateSchema>
+
+export interface ProductFilter {
+  categoryId: number | null 
+  rangePrice: [number | null, number | null]
+  artisanId: number | null
 }

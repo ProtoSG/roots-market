@@ -1,9 +1,4 @@
-export class Category {
-  categoryId?: number;
-  name: string;
+import type { z } from "zod";
+import type { categorySchema } from "../schemas/category.schema";
 
-  constructor(categoryId: number, name: string) {
-    this.categoryId = categoryId;
-    this.name = name;
-  }
-}
+export type Category = z.infer<typeof categorySchema>
