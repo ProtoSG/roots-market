@@ -1,12 +1,14 @@
 import { Outlet } from "react-router-dom";
-import { Header } from "../components/UI";
+import { Header, ModalLoggin, ModalProduct } from "../components/UI";
 import { Toaster } from "sonner";
 
-export default function Layout(){
+export function Layout(){
   return (
     <>
       <Header />
       <Outlet />
+      <ModalProduct />
+      <ModalLoggin />
       <Toaster richColors/>
     </>
   )
