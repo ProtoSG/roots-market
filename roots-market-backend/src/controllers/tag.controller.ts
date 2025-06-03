@@ -1,38 +1,26 @@
 import type { Request, Response } from "express";
-import { Tag } from "../models/tag.model";
-import { createTag, deleteTag } from "../services/tag.service";
-
-export const registerTag = async(req: Request, res: Response) => {
-  try {
-    const {artisanId, name}: Tag = req.body
-    
-    const newTag = new Tag(artisanId, name)
-
-    const tagCraeted = await createTag(newTag)
-
-    res.json({
-      id: tagCraeted.tagId,
-      message: tagCraeted.message
-    })
-  } catch (error) {
-    res.status(500).json({
-      message: "Error al registrar Tag"
-    })
-  }
-}
+import { deleteTag } from "../services/tag.service";
 
 export const removeTag = async(req: Request, res: Response) => {
   try{
-    const tagId = parseInt(req.body.id as string)
-    if(isNaN(tagId)){
+    const artisanId = req.user.id 
+
+    const tagId = Number(req.body.id)
+    if(Number.isNaN(tagId)){
       return res.status(500).json({
         message: "ID inválido"
       })
     }
 
-    const {message} = await deleteTag(tagId)
+    const id = await deleteTag(tagId, artisanId)
 
-    res.json({message})
+    if(!id) return res
+      .status(404)
+      .json({message: `Tag con ID ${id} no existe`})
+
+    res.json({
+      message: "Tag eliminado exitosamente"
+    })
   } catch(error) {
     res.status(500).json({
       message: "Error al remover Tag"

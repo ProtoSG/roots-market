@@ -1,83 +1,12 @@
 import {type Request, type Response} from 'express'
-import type { Artisan } from '../models/artisan.model.ts';
-import { createArtisan, foundArtisanByEmail, readArtisanById, readArtisans, readLastedArtisan } from '../services/artisan.service.ts';
-import bcrypt from 'bcryptjs';
-import { createAccessToken } from '../libs/jwt.ts';
-
-export const registerNewArtisan = async(req: Request, res: Response) => {
-  try {
-    const {
-      name,
-      username, 
-      password,
-      bio,
-      location,
-      profileImageURL,
-      email,
-    } = req.body;
-
-    const artisanFound = await foundArtisanByEmail(email);
-
-    if (artisanFound)
-      return res.status(400).json({
-        message: ["The email is already in use"],
-      });
-    
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    const artisanData: Artisan = {
-      name,
-      username,
-      password: passwordHash,
-      bio,
-      location,
-      profileImageURL,
-      email
-    };
-
-    const newArtisan = await createArtisan(artisanData);
-
-    const token = await createAccessToken({
-      id: newArtisan.id,
-    });
-
-    const isProduction = process.env.NODE_ENV === "production";
-
-    res.cookie("token", token, {
-      httpOnly: isProduction,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-    });
-
-    res.json({
-      id: newArtisan.id,
-      username: username,
-      email:email,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Error al T crear el artesano" });
-  }
-}
-
-export const getArtisans = async(_: Request, res: Response) => {
-  try {
-    const artisans = await readArtisans()
-
-    if (!artisans) return res.status(404).json({
-      message: "No hay Artesanos"
-    })
-
-    res.json(artisans)
-  } catch (error) {
-    res.status(500).json({
-      message: "Error al obtener Artesanos" 
-    })
-  }
-}
+import { readArtisanById, readArtisans, readLastedArtisan, updateArtisan } from '../services/artisan.service.ts';
+import { ZodParsedType } from 'zod';
+import { artisanSchema } from '../schemas/artisan.schema.ts';
+import type { Artisan, ArtisanUpdate } from '../models/artisan.model.ts';
 
 export const getArtisanById = async(req: Request, res: Response) => {
    try {
-    const artisanId = parseInt(req.params.id as string, 10);
+    const artisanId = req.user.id
 
     if (isNaN(artisanId)) {
       return res.status(400).json({ message: "ID de artesano inválido" });
@@ -92,6 +21,53 @@ export const getArtisanById = async(req: Request, res: Response) => {
     res.status(200).json(artisan);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener el artesano" });
+  }
+}
+
+export const putArtisan = async(req: Request, res: Response) => {
+  try {
+    const id = req.user.id
+    console.log("ID: ", id)
+    const { name, username, email, bio, location, profileImageURL } = req.body;
+    
+    const artisan: ArtisanUpdate = {
+      name,
+      username,
+      email,
+      bio,
+      location,
+      profileImageURL
+    }
+    const artisanId = await updateArtisan(id, artisan)
+    console.log("ArtisanID: ", artisanId)
+    if (!artisanId) return res.status(404).json({
+      message: `Artesano con ID ${artisanId} no encontrado`
+    })
+    
+    res.status(200).json({
+      id: artisanId,
+      message: `Artesano con ID ${artisanId} actualizado.`
+    })
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar el artesano" });
+  }
+}
+
+export const getArtisans = async(req: Request, res: Response) => {
+  try {
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || 9
+    const artisans = await readArtisans(page, limit)
+
+    if (!artisans) return res.status(404).json({
+      message: "No hay Artesanos"
+    })
+
+    res.json(artisans)
+  } catch (error) {
+    res.status(500).json({
+      message: "Error al obtener Artesanos" 
+    })
   }
 }
 

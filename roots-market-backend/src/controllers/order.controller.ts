@@ -1,17 +1,21 @@
 import type { Request, Response } from "express";
-import { Order, StatusOrder } from "../models/order.model";
 import { createOrder, updateStatusOrder } from "../services/order.service";
+import type { Order } from "../models/order.model";
 
 export const registerOrder = async(req: Request, res: Response) => {
   try {
-    const {total}:Order = req.body
+    const {ordersDetails, status}:Order = req.body
 
-    const newOrder = new Order ( total )
-    const orderCreated = await createOrder(newOrder)
+    const newOrder: Order = {
+      status,
+      ordersDetails
+    } 
+
+    const idOrderCreated = await createOrder(newOrder)
     
     res.json({
-      id: orderCreated.orderId,
-      message: orderCreated.message
+      id: idOrderCreated,
+      message: `Order creada`
     })
   } catch (error) {
     res.status(500).json({
