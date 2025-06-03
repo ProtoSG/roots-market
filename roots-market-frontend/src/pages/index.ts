@@ -1,3 +1,5 @@
 export * from "./Home.tsx"
 export * from "./Artisans.tsx"
 export * from "./Products.tsx"
+export * from "./Cart.tsx"
+export * from "./artisan/index.ts"
