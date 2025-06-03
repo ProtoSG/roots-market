@@ -1,7 +1,6 @@
 import { ReactNode } from "react"
 import { FacebookIcon, InstagramIcon, YoutubeIcon } from "../../icons"
 import { SocialNetwork } from "../../models/socialNetwork.model"
-import { UnderlineText } from "../UI"
 
 interface Props {
   item: SocialNetwork
@@ -13,7 +12,7 @@ const ICONS: Record<string, ReactNode> = {
   youtube: <YoutubeIcon />
 }
 
-export function ItenSocialNetwork({item}: Props){
+export function ItemSocialNetwork({item}: Props){
   const icon = ICONS[item.type.toLowerCase()]
 
   return (
