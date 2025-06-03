@@ -3,8 +3,6 @@ import { useLastArtisan } from "../../hooks/useArtisan"
 export function ArtisanHighlight(){
   const artisan = useLastArtisan()
 
-  console.log("ARTISAN: \n", artisan)
-
   return(
     <section className="sm:flex gap-6">
       <div className="bg-zinc-300 min-h-full min-w-60 rounded">
