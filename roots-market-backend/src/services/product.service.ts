@@ -1,7 +1,8 @@
-import type { Product, ProductCreate, ProductFilter, ProductUpdate } from "../models/product.model";
+import type { ProductCreate, ProductFilter, ProductResponse, ProductUpdate } from "../models/product.model";
 import { connection } from "../connection"
-import { toInt } from "../utils/toInt.utils";
 import { parseJsonArray } from "../utils/parseJsonArray.utils";
+import type { TagResponse } from "../models/tag.model";
+import type { ImageResponse } from "../models/image.model";
 
 export const createProduct = async(product: ProductCreate)=> {
   const transaction = await connection.transaction("write")
@@ -319,7 +320,7 @@ export const readProducts = async(
   page = 1,
   limit = 9,
   filters: ProductFilter
-) => {
+): Promise<ProductResponse[]> => {
   const offset = (page - 1) * limit
 
   const whereClauses = ["p.isDeleted = 0"];
@@ -353,6 +354,7 @@ export const readProducts = async(
         p.price,
         p.story,
         p.categoryId,
+        p.stock,
         p.soldCount,
         a.artisanId,
         a.name AS artisanName,
@@ -390,10 +392,20 @@ export const readProducts = async(
       args,
     });
 
-    const data = rows.map((row) => ({
-      ...row, 
-      tags: parseJsonArray(row.tags),
-      images: parseJsonArray(row.images),
+    console.log("ROWS", rows)
+
+    const data: ProductResponse[] = rows.map((row) => ({
+      productId: Number(row.productId ?? row[0]),
+      name: String(row.name ?? row[1]),
+      price: Number(row.price ?? row[2]),
+      story: String(row.story ?? row[3]),
+      categoryId: Number(row.categoryId ?? row[4]),
+      stock: Number(row.stock ?? row[5] ?? 0),
+      soldCount: Number(row.soldCount ?? row[6]),
+      artisanId: Number(row.artisanId ?? row[7]),
+      artisanName: String(row.artisanName ?? row[8]),
+      tags: parseJsonArray<TagResponse>(row.tags ?? row[9]),
+      images: parseJsonArray<ImageResponse>(row.images ?? row[10]),
     }));
 
     return data;
@@ -426,17 +438,24 @@ export const readRankingProduct = async() => {
           p.price,
           p.story,
           p.categoryId,
+          p.stock,
           p.soldCount,
           a.artisanId,
           a.name AS artisanName,
           (
-              SELECT json_group_array(DISTINCT t.name)
+              SELECT json_group_array(json_object(
+                'tagId', t.tagId,
+                'name', t.name
+              ))
               FROM ProductTag pt
               JOIN Tag t ON t.tagId = pt.tagId
               WHERE pt.productId = p.productId
           ) AS tags,
           (
-              SELECT json_group_array(DISTINCT i.imageUrl)
+              SELECT json_group_array(json_object(
+                'imageId', i.imageId,
+                'imageUrl', i.imageUrl
+              ))
               FROM Image i
               WHERE i.productId = p.productId
           ) AS images
@@ -472,16 +491,23 @@ export const readRankingProductByArtisan = async(id: number) => {
           p.story,
           p.categoryId,
           p.soldCount,
+          p.stock,
           a.artisanId,
           a.name AS artisanName,
           (
-              SELECT json_group_array(DISTINCT t.name)
+              SELECT json_group_array(json_object(
+                'tagId', t.tagId,
+                'name', t.name
+              ))
               FROM ProductTag pt
               JOIN Tag t ON t.tagId = pt.tagId
               WHERE pt.productId = p.productId
           ) AS tags,
           (
-              SELECT json_group_array(DISTINCT i.imageUrl)
+              SELECT json_group_array(json_object(
+                'imageId', i.imageId,
+                'imageUrl', i.imageUrl
+              ))
               FROM Image i
               WHERE i.productId = p.productId
           ) AS images

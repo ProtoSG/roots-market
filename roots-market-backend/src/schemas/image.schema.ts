@@ -13,6 +13,23 @@ export const imageSchema = baseImageSchema.extend({
   imageId: z.number()
 });
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ImageUpdate:
+ *       type: object
+ *       properties:
+ *         imageUrl:
+ *           type: string
+ *           format: uri
+ *           description: URL de la imagen
+ *         imageId:
+ *           type: integer
+ *           description: ID de la imagen
+ *       required:
+ *         - imageUrl
+ */
 export const imageUpdateSchema = baseImageSchema.extend({
   imageId: z.number()
 })

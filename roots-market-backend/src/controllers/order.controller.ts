@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { createOrder, updateStatusOrder } from "../services/order.service";
 import type { Order } from "../models/order.model";
+import { StatusOrder } from "../schemas/order.schema";
 
 export const registerOrder = async(req: Request, res: Response) => {
   try {

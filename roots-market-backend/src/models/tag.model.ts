@@ -1,11 +1,29 @@
-export class Tag {
-  tagId?: number;
-  artisanId: number;
-  name: string;
+import type { z } from "zod";
+import type { tagSchema } from "../schemas/tag.schema";
 
-  constructor(artisanId: number, name: string, tagId?: number) {
-    this.tagId = tagId;
-    this.artisanId = artisanId;
-    this.name = name;
-  }
+export type Tag = z.infer<typeof tagSchema>
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     TagResponse:
+ *       type: object
+ *       properties:
+ *         tagId:
+ *           type: integer
+ *           example: 1
+ *           description: ID único del tag
+ *         name:
+ *           type: string
+ *           example: "Cerámica"
+ *           description: Nombre del tag
+ *           maxLength: 50
+ *       required:
+ *         - tagId
+ *         - name
+*/
+export interface TagResponse {
+  tagId: number
+  name: string
 }

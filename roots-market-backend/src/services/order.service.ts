@@ -1,4 +1,3 @@
-import { sql } from "bun";
 import { connection } from "../connection";
 import type { Order } from "../models/order.model";
 import type { StatusOrder } from "../schemas/order.schema";

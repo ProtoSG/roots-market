@@ -1,5 +1,5 @@
 import { connection } from "../connection.ts";
-import type { Artisan, ArtisanCreate, ArtisanUpdate } from "../models/artisan.model.ts";
+import type { ArtisanCreate, ArtisanUpdate } from "../models/artisan.model.ts";
 import type { AuthLogin } from "../models/auth.model.ts";
 import { parseJsonArray } from "../utils/parseJsonArray.utils.ts";
 import { toInt } from "../utils/toInt.utils.ts";

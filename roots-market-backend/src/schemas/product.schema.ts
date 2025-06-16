@@ -26,6 +26,52 @@ export const productSchema = productBaseSchema.extend({
   }).int(),
 });
 
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ProductCreate:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: Nombre del producto
+ *         story:
+ *           type: string
+ *           description: Historia o descripción del producto
+ *         price:
+ *           type: number
+ *           description: Precio del producto
+ *         stock:
+ *           type: integer
+ *           description: Stock disponible
+ *         categoryId:
+ *           type: integer
+ *           description: ID de la categoría
+ *         artisanId:
+ *           type: integer
+ *           description: ID del artesano
+ *         images:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: URLs de imágenes del producto
+ *         tags:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Etiquetas del producto
+ *       required:
+ *         - name
+ *         - story
+ *         - price
+ *         - stock
+ *         - categoryId
+ *         - artisanId
+ *         - images
+ *         - tags
+ */
 export const productCreateSchema = productBaseSchema.extend({
   artisanId: z.number({
     required_error: "Falta el campo 'artisanId'"
@@ -42,6 +88,49 @@ export const productCreateSchema = productBaseSchema.extend({
   }).min(1, { message: "Debe proporcionar al menos una etiqueta" })
 })
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ProductUpdate:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: Nombre del producto
+ *         story:
+ *           type: string
+ *           description: Historia o descripción del producto
+ *         price:
+ *           type: number
+ *           description: Precio del producto
+ *         stock:
+ *           type: integer
+ *           description: Stock disponible
+ *         categoryId:
+ *           type: integer
+ *           description: ID de la categoría
+ *         images:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/ImageUpdate'
+ *           description: Imágenes a actualizar
+ *         imagesIdDelete:
+ *           type: array
+ *           items:
+ *             type: integer
+ *           description: IDs de las imágenes a eliminar
+ *         tags:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Etiquetas del producto
+ *         tagsIdDelete:
+ *           type: array
+ *           items:
+ *             type: integer
+ *           description: IDs de las etiquetas a eliminar
+ */
 export const productUpdateSchema = productBaseSchema.extend({
   images: z.array(imageUpdateSchema),
   imagesIdDelete: z.array(z.number().int()),

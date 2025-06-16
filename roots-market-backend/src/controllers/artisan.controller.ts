@@ -1,8 +1,6 @@
 import {type Request, type Response} from 'express'
 import { readArtisanById, readArtisans, readLastedArtisan, updateArtisan } from '../services/artisan.service.ts';
-import { ZodParsedType } from 'zod';
-import { artisanSchema } from '../schemas/artisan.schema.ts';
-import type { Artisan, ArtisanUpdate } from '../models/artisan.model.ts';
+import type { ArtisanUpdate } from '../models/artisan.model.ts';
 
 export const getArtisanById = async(req: Request, res: Response) => {
    try {

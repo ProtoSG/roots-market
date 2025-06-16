@@ -1,11 +1,24 @@
-export class Image {
-  imageId?: number;
-  productId: number;
-  imageUrl: string;
-
-  constructor(productId: number, imageUrl: string, imageId?: number) {
-    this.imageId = imageId;
-    this.productId = productId;
-    this.imageUrl = imageUrl;
-  }
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ImageResponse:
+ *       type: object
+ *       properties:
+ *         imageId:
+ *           type: integer
+ *           example: 1
+ *           description: ID único de la imagen
+ *         imageUrl:
+ *           type: string
+ *           format: uri
+ *           example: "https://example.com/images/vaso-ceramica.jpg"
+ *           description: URL de la imagen
+ *       required:
+ *         - imageId
+ *         - imageUrl
+ */
+export interface ImageResponse {
+  imageId: number
+  imageUrl: string
 }
