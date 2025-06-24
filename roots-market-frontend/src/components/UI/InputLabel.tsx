@@ -18,9 +18,11 @@ export const InputLabel = forwardRef<HTMLInputElement, InputLabelProps>(({ icon,
           className="w-full py-2 focus:outline-none"
         />
       </label>
-      <p className="text-sm text-center text-red-500">
-        {error}
-      </p>
+      {error && (
+        <p className="text-sm text-center text-red-500">
+          {error}
+        </p>
+      )}
     </>
     )
   }

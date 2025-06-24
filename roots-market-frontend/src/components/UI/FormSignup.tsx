@@ -1,16 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { Register, registerSchema } from "../../models/auth.model"
-import { useAuth } from "../../context/auth.context"
 import { InputLabel } from "./InputLabel"
 import { PrimaryButton, SecondaryButton } from "./Button"
-import { UnderlineText } from "./UnderlineText"
 import { StepsSignup } from "./StepsSignup"
 import { ChangeEvent, useCallback, useEffect, useState } from "react"
 import { TextAreaLabel } from "./TextAreaLabel"
 import { StepFieldset } from "./StepFieldset"
 import {
-    CheckIcon,
   FileIcon,
   LoaderIcon,
   LockIcon,
@@ -21,8 +18,8 @@ import {
 } from "../../icons"
 import { useNavigate } from "react-router-dom"
 import { uselogginDialogStore } from "../../stores/dialogStore"
-import { set } from "zod"
 import { ErrorBox } from "./ErrorBox"
+import { useAuth } from "../../hooks/useAuth"
 
 const STEP_FIELDS: Record<number, (keyof Register)[]> = {
   0: ["username", "password", "confirmPassword"],

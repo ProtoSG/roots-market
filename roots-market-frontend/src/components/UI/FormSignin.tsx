@@ -4,11 +4,11 @@ import { PrimaryButton } from "./Button";
 import { InputLabel } from "./InputLabel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Login, loginSchema } from "../../models/auth.model";
-import { useAuth } from "../../context/auth.context";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { uselogginDialogStore } from "../../stores/dialogStore";
 import { ErrorBox } from "./ErrorBox";
+import { useAuth } from "../../hooks/useAuth";
 
 export function FormSignin() {
   const firstRun = useRef(true);

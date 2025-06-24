@@ -21,7 +21,7 @@ export function CardProduct({product}: Props){
       onClick={handleOpenDialog}
     >
       <div className="w-full h-64 rounded bg-zinc-200">
-        <img src={product.images[0]} className="w-full h-full object-cover rounded-lg" />
+        <img src={product.images[0].imageUrl} className="w-full h-full object-cover rounded-lg" />
       </div>
     <div className="">
         <h3 className="text-lg text-center text-pretty">{product.name}</h3>

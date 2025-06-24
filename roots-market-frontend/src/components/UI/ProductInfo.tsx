@@ -15,7 +15,7 @@ export function ProductInfo(){
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-12">
         <img 
           className="h-64 w-full sm:w-48 object-cover rounded-lg"
-          src={product.images[0]}
+          src={product.images[0].imageUrl}
         />
         <article 
           className="flex flex-col gap-5"

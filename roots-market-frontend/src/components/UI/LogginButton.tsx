@@ -1,24 +1,27 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/auth.context";
-import { UserIcon } from "../../icons";
 import { uselogginDialogStore } from "../../stores/dialogStore";
+import { useAuth } from "../../hooks/useAuth";
 
 export function LoginButton() {
   const { setOpen } = uselogginDialogStore()
   const {isAuthenticated} = useAuth()
   const navigate = useNavigate()
 
+  console.log({isAuthenticated})
+
   const handleOpenOrNavigate = () => {
     if (isAuthenticated) navigate("/artisan")
     else setOpen(true)
   }
 
+  const textLoggin = isAuthenticated ? 'Mi perfil' : 'Iniciar Sesión'
+
   return(
-    <div 
-      onClick={handleOpenOrNavigate}
-      className="relative hover:cursor-pointer group transition-colors border-2 border-primary hover:bg-primary rounded-full p-2"
+    <div
+      onClick={handleOpenOrNavigate} 
+      className="hover:underline hover:text-primary transition-all cursor-pointer"
     >
-      <UserIcon className="text-primary  group-hover:text-white transition-colors"/>
-    </div>
+      <span>{textLoggin}</span>
+     </div> 
   )
 }
