@@ -20,7 +20,7 @@ import type { ProductResponse } from "./product.model";
  *         location:
  *           type: string
  *           description: Ubicación del artesano
- *         profileImageURL:
+ *         profileImageUrl:
  *           type: string
  *           format: uri
  *           description: URL de la imagen de perfil
@@ -32,7 +32,7 @@ import type { ProductResponse } from "./product.model";
  *         - name
  *         - bio
  *         - location
- *         - profileImageURL
+ *         - profileImageUrl
  *         - email
  *     Artisan:
  *       allOf:
@@ -94,6 +94,11 @@ export type ArtisanBase = z.infer<typeof artisanBaseSchema>
 export type Artisan = z.infer<typeof artisanSchema>
 export type ArtisanCreate = z.infer<typeof artisanCreateSchema>
 export type ArtisanUpdate = z.infer<typeof artisanUpdateSchema>
+
+export interface ArtisanInfoResponse extends Artisan {
+  username: string
+  socialNetworks: SocialNetwork[]
+} 
 
 export interface ArtisanResponse extends Artisan {
   socialNetworks: SocialNetwork[]

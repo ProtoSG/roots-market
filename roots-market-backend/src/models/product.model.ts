@@ -65,7 +65,7 @@ export interface ProductFilter {
  * @swagger
  * components:
  *   schemas:
- *     ProductResponse:
+ *     ProductResponseInfo:
  *       type: object
  *       allOf:
  *         - $ref: '#/components/schemas/Product'
@@ -88,17 +88,65 @@ export interface ProductFilter {
  *           items:
  *             $ref: '#/components/schemas/ImageResponse'
  *           description: Lista de imágenes del producto
- *       required:
- *         - soldCount
- *         - artisanName
- *         - tags
- *         - images
  */
-export interface ProductResponse extends Product{
+export interface ProductResponseInfo extends Product{
   soldCount: number
   artisanName: string 
   tags: TagResponse[]
   images: ImageResponse[] 
+}
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     MetaProductPagination:
+ *       type: object
+ *       properties:
+ *         page:
+ *           type: integer
+ *           example: 1
+ *           description: Número de página (por defecto 1)
+ *         limit:
+ *           type: integer
+ *           example: 9
+ *           description: Cantidad de productos por página (por defecto 9)
+ *         totalItems:
+ *           type: integer
+ *           example: 9
+ *           description: Número de productos
+ *         totalPages:
+ *           type: integer
+ *           example: 3
+ *           description: Número de páginas
+ */
+export interface MetaProductPagination {
+  page: number 
+  limit: number 
+  totalItems: number 
+  totalPages: number
+}
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ProductResponse:
+ *       type: object
+ *       properties:
+ *         data:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/ProductResponseInfo'
+ *         meta:
+ *           $ref: '#/components/schemas/MetaProductPagination'
+ *       required:
+ *         - data
+ *         - meta
+ */
+export interface ProductResponse{
+  data: ProductResponseInfo[]
+  meta: MetaProductPagination
 }
 
 /**
