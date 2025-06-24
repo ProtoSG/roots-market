@@ -1,5 +1,5 @@
 import { ItemLink, LogoutButton } from "."
-import { useAuth } from "../../context/auth.context"
+import { useAuth } from "../../hooks/useAuth"
 import { BoxIcon, UserIcon } from "../../icons"
 
 const LINKS = [

@@ -1,4 +1,4 @@
-import { useAuth } from "../../context/auth.context";
+import { useAuth } from "../../hooks/useAuth";
 import { LogoutIcon } from "../../icons";
 
 export function LogoutButton() {
