@@ -54,9 +54,7 @@ const router = Router()
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/ProductResponse'
+*                 $ref: '#/components/schemas/ProductResponse'
  *       400:
  *         description: Parámetros inválidos en la consulta
  *         content:
