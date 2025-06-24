@@ -1,7 +1,7 @@
-import { useLastArtisan } from "../../hooks/useArtisan"
+import { useArtisanPublic } from "../../hooks/useArtisan"
 
 export function ArtisanHighlight(){
-  const artisan = useLastArtisan()
+  const {artisanLast: artisan} = useArtisanPublic()
 
   return(
     <section className="sm:flex gap-6">

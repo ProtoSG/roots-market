@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { HighlightedText, PrimaryButton, Title } from "../../components/UI";
+import { ArrowIcon } from "../../icons";
 
 export function Hero(){
   const navigate = useNavigate()
@@ -16,9 +17,10 @@ export function Hero(){
       </p>
       <PrimaryButton 
         onClick={() => navigate("/products")}
-        className="z-0 hover:scale-105 hover:drop-shadow-2xl m-auto"
+        className="flex gap-2 items-center z-0 hover:scale-105 hover:drop-shadow-2xl m-auto"
       >
-        Comprar Ahora
+        <span className="font-bold">Comprar Ahora</span>
+        <ArrowIcon className="rotate-180"/>
       </PrimaryButton>
     </section>
   )
