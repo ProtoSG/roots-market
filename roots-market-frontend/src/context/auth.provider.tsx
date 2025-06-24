@@ -1,25 +1,8 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import { Login, LoginResponse, Register, RegisterResponse } from "../models/auth.model"
 import { loginRequest, registerRequest, verifyTokenRequest } from "../api/auth"
-import Cookies from "js-cookie";
-
-interface AuthContextType {
-  user: LoginResponse | null;
-  isAuthenticated: boolean;
-  errors: string[];
-  loading: boolean;
-  signin: (user: Login) => Promise<void>;
-  signup: (user: Register) => Promise<void>;
-  logout: () => Promise<void>;
-}
-
-const AuthContext = createContext<AuthContextType | null>(null)
-
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) throw new Error("useAuth must be used within a AuthProvider")
-  return context 
-}
+import Cookies from "js-cookie"
+import { AuthContext } from "./aut.context"
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [user, setUser] = useState<LoginResponse | null>(null)
