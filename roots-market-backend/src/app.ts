@@ -22,7 +22,16 @@ app.use(
 app.use(express.json())
 app.use(cookieParser())
 
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec))
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec, {
+  swaggerOptions: {
+    withCredentials: true,
+      requestInterceptor: (req) => {
+      // Asegura que todas las peticiones (login, me, etc.) se hagan con cookies
+      req.credentials = "include";
+      return req;
+    },
+  }
+}))
 
 app.use("/api", artisanRoutes)
 app.use("/api", categoryRoutes)
