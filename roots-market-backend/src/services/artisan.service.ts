@@ -1,5 +1,5 @@
 import { connection } from "../connection.ts";
-import type { ArtisanCreate, ArtisanUpdate } from "../models/artisan.model.ts";
+import type { ArtisanBase, ArtisanCreate, ArtisanInfoResponse, ArtisanResponse, ArtisanUpdate } from "../models/artisan.model.ts";
 import type { AuthLogin } from "../models/auth.model.ts";
 import { parseJsonArray } from "../utils/parseJsonArray.utils.ts";
 import { toInt } from "../utils/toInt.utils.ts";
@@ -18,7 +18,7 @@ export const createArtisan = async(artisan: ArtisanCreate) => {
       artisan.password,
       artisan.bio,
       artisan.location,
-      artisan.profileImageURL,
+      artisan.profileImageUrl,
       artisan.email,
       artisan.testimony
     ]
@@ -32,8 +32,10 @@ export const readArtisanById = async(id: number) => {
     SELECT 
         a.artisanId,
         a.name,
+        a.username,
         a.bio,
         a.location,
+        a.email,
         a.profileImageUrl,
         json_group_array(
             json_object(
@@ -53,12 +55,18 @@ export const readArtisanById = async(id: number) => {
     args: [id]
   });
 
-  const parsedRows = rows.map((row) => ({
-    ...row,
-    socialNetworks: parseJsonArray(row.socialNetworks),
-  }))
+  const data: ArtisanInfoResponse = {
+    artisanId: Number(rows[0]?.artisanId),
+    name: String(rows[0]?.name),
+    username: String(rows[0]?.username),
+    bio: String(rows[0]?.bio),
+    location: String(rows[0]?.location),
+    email: String(rows[0]?.email),
+    profileImageUrl: String(rows[0]?.profileImageUrl),
+    socialNetworks: parseJsonArray(rows[0]?.socialNetworks),
+  }
 
-  return parsedRows; 
+  return data; 
 }
 
 export const updateArtisan = async(id:number, artisan: ArtisanUpdate) => {
@@ -82,7 +90,7 @@ export const updateArtisan = async(id:number, artisan: ArtisanUpdate) => {
         artisan.email,
         artisan.bio,
         artisan.location,
-        artisan.profileImageURL,
+        artisan.profileImageUrl,
         id
       ] 
     })
@@ -97,12 +105,18 @@ export const updateArtisan = async(id:number, artisan: ArtisanUpdate) => {
 
 export const readArtisans = async(page = 1, limit = 9) => {
   const offset = (page - 1) * limit
+  
+  const countSql = `
+    SELECT COUNT(*) AS total 
+    FROM Artisan a
+  `
   const query = `
     SELECT 
         a.artisanId,
         a.name,
         a.bio,
         a.location,
+        a.email,
         a.profileImageUrl,
         json_group_array(
             json_object(
@@ -116,18 +130,34 @@ export const readArtisans = async(page = 1, limit = 9) => {
     GROUP BY a.artisanId
     LIMIT ? OFFSET ?;
   `
+  
+  const { rows: totalRow } = await connection.execute({
+    sql: countSql
+  })
+
+  const totalItems = totalRow.length > 0 ? Number(totalRow[0]?.total) : 0 
 
   const { rows } = await connection.execute({
     sql: query,
     args: [limit, offset]
   })
 
-  const parsedRows = rows.map((row) => ({
+  const data = rows.map((row) => ({
     ...row,
     socialNetworks: parseJsonArray(row.socialNetworks),
   }))
 
-  return parsedRows
+  const totalPages = Math.ceil(totalItems / limit)
+
+  return {
+    data,
+    meta: {
+      page,
+      limit,
+      totalItems,
+      totalPages,
+    }
+  }
 }
 
 export const readLastedArtisan = async() => {

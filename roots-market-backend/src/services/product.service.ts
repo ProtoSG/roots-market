@@ -1,4 +1,4 @@
-import type { ProductCreate, ProductFilter, ProductResponse, ProductUpdate } from "../models/product.model";
+import type { ProductCreate, ProductFilter, ProductResponse, ProductResponseInfo, ProductUpdate } from "../models/product.model";
 import { connection } from "../connection"
 import { parseJsonArray } from "../utils/parseJsonArray.utils";
 import type { TagResponse } from "../models/tag.model";
@@ -320,7 +320,7 @@ export const readProducts = async(
   page = 1,
   limit = 9,
   filters: ProductFilter
-): Promise<ProductResponse[]> => {
+): Promise<ProductResponse> => {
   const offset = (page - 1) * limit
 
   const whereClauses = ["p.isDeleted = 0"];
@@ -347,6 +347,15 @@ export const readProducts = async(
     args.push(filters.artisanId);
   }
 
+
+  const countSql = `
+    SELECT COUNT(*) AS total
+    FROM Product p
+    WHERE ${whereClauses.join(" AND ")};
+  `;
+
+  const pageArgs = [...args, limit, offset];
+  
   const query = `
     SELECT 
         p.productId,
@@ -384,17 +393,20 @@ export const readProducts = async(
     LIMIT ? OFFSET ?;
   `;
 
-  args.push(limit, offset);
-
   try {
-    const { rows } = await connection.execute({
-      sql: query,
+    const { rows: totalRow} = await connection.execute({
+      sql: countSql,
       args,
     });
+    
+    const totalItems = totalRow.length > 0 ? Number(totalRow[0]?.total) : 0;
 
-    console.log("ROWS", rows)
+    const { rows } = await connection.execute({
+      sql: query,
+      args: pageArgs,
+    });
 
-    const data: ProductResponse[] = rows.map((row) => ({
+    const data: ProductResponseInfo[] = rows.map((row) => ({
       productId: Number(row.productId ?? row[0]),
       name: String(row.name ?? row[1]),
       price: Number(row.price ?? row[2]),
@@ -408,7 +420,17 @@ export const readProducts = async(
       images: parseJsonArray<ImageResponse>(row.images ?? row[10]),
     }));
 
-    return data;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+      data,
+      meta: {
+        page,
+        limit,
+        totalItems,
+        totalPages,
+      }
+    };
   } catch (error) {
     throw new Error("Error al leer los productos");
   }
