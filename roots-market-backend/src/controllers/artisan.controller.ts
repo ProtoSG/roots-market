@@ -25,8 +25,7 @@ export const getArtisanById = async(req: Request, res: Response) => {
 export const putArtisan = async(req: Request, res: Response) => {
   try {
     const id = req.user.id
-    console.log("ID: ", id)
-    const { name, username, email, bio, location, profileImageURL } = req.body;
+    const { name, username, email, bio, location, profileImageUrl } = req.body;
     
     const artisan: ArtisanUpdate = {
       name,
@@ -34,10 +33,9 @@ export const putArtisan = async(req: Request, res: Response) => {
       email,
       bio,
       location,
-      profileImageURL
+      profileImageUrl
     }
     const artisanId = await updateArtisan(id, artisan)
-    console.log("ArtisanID: ", artisanId)
     if (!artisanId) return res.status(404).json({
       message: `Artesano con ID ${artisanId} no encontrado`
     })
@@ -55,6 +53,7 @@ export const getArtisans = async(req: Request, res: Response) => {
   try {
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || 9
+
     const artisans = await readArtisans(page, limit)
 
     if (!artisans) return res.status(404).json({

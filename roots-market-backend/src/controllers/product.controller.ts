@@ -118,8 +118,6 @@ export const getProductsByArtisan = async(req: Request, res: Response) => {
     const page = Number(req.query.page) || 1 
     const limit = Number(req.query.limit) || 10
 
-    console.log({artisanId, page, limit})
-    
     const products = await readProductsByArtisan(artisanId, page, limit)
     if(!products){
       return res.status(404).json({

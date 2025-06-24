@@ -19,7 +19,7 @@ export const registerCategory = async (req: Request, res: Response) => {
 
     const newCategory = await createCategory(category)
 
-    res.json({
+    res.status(201).json({
       id: newCategory.categoryId,
       message: newCategory.message,
     })

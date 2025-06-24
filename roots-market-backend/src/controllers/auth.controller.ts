@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { createAccessToken } from "../libs/jwt";
 import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config";
-import type { Artisan } from "../models/artisan.model";
+import type { Artisan, ArtisanCreate } from "../models/artisan.model";
 
 export const register = async(req: Request, res: Response) => {
   try {
@@ -14,7 +14,7 @@ export const register = async(req: Request, res: Response) => {
       password,
       bio,
       location,
-      profileImageURL,
+      profileImageUrl,
       email,
       testimony
     } = req.body;
@@ -34,13 +34,13 @@ export const register = async(req: Request, res: Response) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const artisanData: Artisan = {
+    const artisanData: ArtisanCreate = {
       name,
       username,
       password: passwordHash,
       bio,
       location,
-      profileImageURL,
+      profileImageUrl,
       email,
       testimony
     };
@@ -54,9 +54,9 @@ export const register = async(req: Request, res: Response) => {
     const isProduction = process.env.NODE_ENV === "production";
 
     res.cookie("token", token, {
-      httpOnly: isProduction,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
+      httpOnly: true,
+      // secure: true,
+      // sameSite: "none",
     });
 
     res.json({
@@ -110,7 +110,6 @@ export const verifyToken = async (req: Request, res: Response) => {
   if(!token) return res.send(false)
 
   jwt.verify(token, TOKEN_SECRET, async (error: any, user: any) => {
-    console.log({user})
     if (error) return res.sendStatus(401)
 
     const userFound = await readArtisanById(user.id)
