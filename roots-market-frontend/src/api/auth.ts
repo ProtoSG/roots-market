@@ -1,10 +1,11 @@
 import { Login, LoginResponse, Register, RegisterResponse, VerifyResponse } from "../models/auth.model";
-import { requestJSON } from "./fetchData";
+import { requestJSON } from "./requestJSON";
 
 export const loginRequest =  (user: Login) => 
   requestJSON<LoginResponse>("/auth/login", {
     method: "POST",
-    body: JSON.stringify(user)
+    body: JSON.stringify(user),
+    credentials: "include"
   })
 
 export const registerRequest = async (user: Register) => {
@@ -17,9 +18,7 @@ export const registerRequest = async (user: Register) => {
     profileImageURL: user.profileImageURL,
     email: user.email,
     testimony: user.testimony || ""
-  }  
-
-  console.log({cleanData})
+  }
 
   return requestJSON<RegisterResponse>("/auth/register", {
     method: "POST",
@@ -30,4 +29,5 @@ export const registerRequest = async (user: Register) => {
 export const verifyTokenRequest = async () =>
   requestJSON<VerifyResponse>("/auth/verify", {
     method: "GET",
+    credentials: "include"
   });
