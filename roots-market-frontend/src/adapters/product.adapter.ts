@@ -1,6 +1,6 @@
-import { Product, ProductBack } from "../models/product.model";
+import { Product, ProductResponseInfo } from "../models/product.model";
 
-export const productAdapter = (product: ProductBack): Product => ({
+export const productAdapter = (product: ProductResponseInfo): Product => ({
   id: product.productId,
   name: product.name,
   story: product.story,
