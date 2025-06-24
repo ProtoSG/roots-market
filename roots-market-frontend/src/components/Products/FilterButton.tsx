@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { PrimaryButton } from "../../components/UI";
 import { FilterIcon } from "../../icons";
 import { FilterProducts } from "./FilterProducts";
-import { useFilterStore } from "../../stores/filterStore";
+import { UseFilterStore } from "../../stores/filterStore";
 import { ItemsFilter } from "./ItemsFilter";
 
 export function FilterButton(){
@@ -16,7 +16,7 @@ export function FilterButton(){
     clearRangeFilter,
     MIN,
     MAX,
-  } = useFilterStore()
+  } = UseFilterStore()
 
   return(
     <div className="w-full flex justify-between relative">

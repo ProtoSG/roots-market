@@ -1,17 +1,17 @@
-import { useCategories } from "../../hooks/useCategory";
+import { useCategory } from "../../hooks/useCategory";
 import { FiletrItemsContainer, ListFilterItems, PriceRange } from "../../components/Products";
-import { useArtisans } from "../../hooks/useArtisan";
-import { PrimaryButton, SecondaryButton } from "../../components/UI";
+import { SecondaryButton } from "../../components/UI";
 import { clsx } from "clsx";
-import { useFilterStore } from "../../stores/filterStore";
+import { UseFilterStore } from "../../stores/filterStore";
+import { useArtisanPublic } from "../../hooks/useArtisan";
 
 interface Props{
   className?: string
 }
 
 export function FilterProducts({className}: Props){
-  const categories = useCategories()
-  const artisans = useArtisans()
+  const {categories} = useCategory()
+  const {artisans} = useArtisanPublic()
 
   const { 
     categoryFilter,
@@ -21,7 +21,7 @@ export function FilterProducts({className}: Props){
     clearArtisanFilter,
     setCategoryFilter,
     setArtisanFilter
-  } = useFilterStore()
+  } = UseFilterStore()
 
   return (
       <section className={
@@ -42,16 +42,10 @@ export function FilterProducts({className}: Props){
         <FiletrItemsContainer name="ARTESANOS" onClearClick={clearArtisanFilter}>
           <ListFilterItems
             itemFilter={artisanFilter}
-            items={artisans}
+            items={artisans.data}
             changeItemFileter={setArtisanFilter}
           />
         </FiletrItemsContainer>
-        <PrimaryButton 
-          onClick={() => {}}
-          className="m-0 w-full"
-        >
-          APLICAR FILTROS
-        </PrimaryButton>
         <SecondaryButton
           onClick={() => {}}
           className=""
