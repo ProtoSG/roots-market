@@ -43,7 +43,7 @@ import { z } from "zod";
  *         location:
  *           type: string
  *           description: Ubicación del artesano
- *         profileImageURL:
+ *         profileImageUrl:
  *           type: string
  *           format: uri
  *           description: URL de la imagen de perfil
@@ -60,7 +60,7 @@ import { z } from "zod";
  *         - password
  *         - bio
  *         - location
- *         - profileImageURL
+ *         - profileImageUrl
  *         - email
  *         - testimony
  *     RegisterResponse:

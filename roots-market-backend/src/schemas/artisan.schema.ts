@@ -10,8 +10,8 @@ export const artisanBaseSchema = z.object({
   location: z.string({
     required_error: "El campo 'location' es requerido"
   }).min(1, "La ubicación es obligatoria"),
-  profileImageURL: z.string({
-    required_error: "El campo 'profileImageURL' es requerido"
+  profileImageUrl: z.string({
+    required_error: "El campo 'profileImageUrl es requerido"
   }).url("La URL de la imagen de perfil debe ser válida"),
   email: z.string({
     required_error: "El campo 'email' es requerido"
