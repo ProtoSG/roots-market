@@ -13,3 +13,4 @@ const createDialogStore = () => create<DialogState>((set) => ({
 export const useProductDiaglogStore = createDialogStore()
 export const useArtisanDialogStore = createDialogStore()
 export const uselogginDialogStore = createDialogStore()
+export const useInfoArtisanDialogStore = createDialogStore()

@@ -14,3 +14,4 @@ const createItemStore = <T>() => create<ItemState<T>>((set) => ({
 
 export const useProductStore = createItemStore<Product>()
 export const useArtisanStore = createItemStore<Artisan>()
+export const useArtisanUpdateStore = createItemStore<Artisan>()
