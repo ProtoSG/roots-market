@@ -1,16 +1,16 @@
 import { useNavigate } from "react-router-dom"
-import { useProductRankingById } from "../../hooks/useProduct"
 import { FeaturedProducts } from "../../sections/Home"
 import { useArtisanStore } from "../../stores/itemStore"
-import { Tag, UnderlineText } from "../UI"
+import { ListItemsSocialNetwork, Tag, UnderlineText } from "../UI"
 import { ItemSocialNetwork } from "./ItemSocialNetwork"
-import { useFilterStore } from "../../stores/filterStore"
+import { UseFilterStore } from "../../stores/filterStore"
+import { useProduct } from "../../hooks/useProduct"
+import { MailIcon } from "../../icons"
 
 export function ArtisanInfo() {
   const { item: artisan} = useArtisanStore()
-  const { setArtisanFilter } = useFilterStore()
-
-  const products = useProductRankingById(artisan?.id || 0)
+  const { setArtisanFilter } = UseFilterStore()
+  const { productsRankingByArtisan: products } = useProduct()
 
   const navigate = useNavigate()
 
@@ -47,14 +47,16 @@ export function ArtisanInfo() {
           <main>
             <p>{artisan.bio}</p>
           </main>
-          <footer className="flex gap-8">
-            {validNetworks.length === 0 ? (
-                <p className="text-primary">No hay redes sociales</p>
-            ) : (
-              validNetworks.map((sn) => (
-                <ItemSocialNetwork key={sn.id} item={sn} />
-              ))
-            )}
+          <footer className="flex flex-col gap-4">
+            <ListItemsSocialNetwork items={validNetworks} />
+            <a 
+              target="_blank" 
+              href={`mailto:${artisan.email}`}
+              className="flex gap-2 items-center transition-colors hover:text-primary cursor-pointer group"
+            >
+              <MailIcon />
+              <span className="group-hover:underline">{artisan.email}</span>
+            </a>
           </footer>
         </article>
       </div>
