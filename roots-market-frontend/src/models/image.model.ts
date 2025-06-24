@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+export const baseImageSchema = z.object({
+  imageId: z.number().int(),
+  imageUrl: z.string().url("La URL de la imagen debe ser válida")
+})
+
 export const imageSchema = z.object({
   imageId: z.number().optional(),
   productId: z.number({
@@ -9,3 +14,8 @@ export const imageSchema = z.object({
     required_error: "imageUrl es requerido"
   }).url("La URL de la imagen debe ser válida"),
 });
+
+export interface ImageResponse {
+  imageId: number 
+  imageUrl: string
+}

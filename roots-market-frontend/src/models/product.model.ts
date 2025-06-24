@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { baseImageSchema, ImageResponse } from "./image.model";
+import { baseTagSchema, TagResponse } from "./tag.model";
 
 export const baseProductSchema = z.object({
   name: z.string().min(1, "El nombre del producto es obligatorio"),
@@ -13,15 +15,14 @@ export const baseProductSchema = z.object({
 export const productSchema = baseProductSchema.extend({
   id: z.number().int(),
   artisanName: z.string().min(1, "El nombre del artesano es obligatorio"),
-  tags: z.array(z.string()),
-  images: z.array(z.string())
+  tags: z.array(baseTagSchema),
+  images: z.array(baseImageSchema)
 })
 
 export type BaseProduct = z.infer<typeof baseProductSchema>
 export type Product = z.infer<typeof productSchema>
 
-
-export type ProductBack = {
+export type ProductResponseInfo = {
   productId: number
   name: string
   story: string 
@@ -31,6 +32,23 @@ export type ProductBack = {
   soldCount: number
   artisanId: number
   artisanName: string
-  tags: string[]
-  images: string[]
+  tags: TagResponse[]
+  images: ImageResponse[]
+}
+
+export type MetaPaginationInfo = {
+  page: number 
+  limit: number 
+  totalItems: number 
+  totalPages: number
+}
+
+export type ProductFilter = {
+  data: Product[]
+  meta: MetaPaginationInfo
+}
+
+export type ProductResponse = {
+  data: ProductResponseInfo[]
+  meta: MetaPaginationInfo
 }
