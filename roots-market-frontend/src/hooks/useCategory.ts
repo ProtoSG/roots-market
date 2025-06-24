@@ -1,16 +1,8 @@
-import { categoryAdapter } from "../adapters/category.adapter"
-import { Category, CategoryResponse } from "../models/category.model"
-import { fetchData } from "../utils/fetchData"
-import { useQuery } from "./useQuery"
+import { useContext } from "react"
+import { CategoryContext } from "../context/category.context"
 
-export const useCategories = () => {
-  const data = useQuery({ 
-    fn: () => fetchData<Category, CategoryResponse>({
-      url: "category",
-      jsonAdapter: categoryAdapter
-    }),
-    key: "category"
-  })
-
-  return data
+export const useCategory = () => {
+  const context = useContext(CategoryContext)
+  if (!context) throw new Error("useCategory debe usarse dentro de CategoryProvider")
+  return context
 }

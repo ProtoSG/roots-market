@@ -15,3 +15,4 @@ function useDialog(isOpen: boolean) {
 export const useProductDialog = (isOpen: boolean) => useDialog(isOpen)
 export const useArtisanDialog = (isOpen: boolean) => useDialog(isOpen)
 export const useLogginDialog = (isOpen: boolean) => useDialog(isOpen)
+export const useInfoArtisanDialog = (isOpen: boolean) => useDialog(isOpen)

@@ -1,40 +1,8 @@
-import { productAdapter } from "../adapters/product.adapter"
-import { Product, ProductBack } from "../models/product.model"
-import { fetchData } from "../utils/fetchData"
-import { useQuery } from "./useQuery"
+import { useContext } from "react"
+import { ProductContext } from "../context/product.context"
 
-export const useProduct = (): Product[]=> {
-  const data = useQuery<Product>({
-    fn: () => fetchData<Product, ProductBack>({
-      url: 'product', 
-      jsonAdapter: productAdapter
-    }), 
-    key: 'product'
-  })
-
-  return data
-}
-
-export const useProductRanking = (): Product[] => {
-  const data = useQuery<Product>({
-    fn: () => fetchData({
-      url: 'product/ranking',
-      jsonAdapter: productAdapter
-    }),
-    key: 'productRanking'
-  })
-
-  return data
-}
-
-export const useProductRankingById = (id: number): Product[] => {
-  const data = useQuery<Product>({
-    fn: () => fetchData({
-      url: `product/ranking/${id}`,
-      jsonAdapter: productAdapter
-    }),
-    key: `productRankingById-${id}`
-  })
-
-  return data
+export const useProduct = () => {
+  const context = useContext(ProductContext)
+  if (!context) throw new Error("useProduct debe usarse dentro de ProductProvider")
+  return context
 }
