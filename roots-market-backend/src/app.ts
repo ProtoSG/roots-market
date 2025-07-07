@@ -26,7 +26,6 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec, {
   swaggerOptions: {
     withCredentials: true,
       requestInterceptor: (req) => {
-      // Asegura que todas las peticiones (login, me, etc.) se hagan con cookies
       req.credentials = "include";
       return req;
     },

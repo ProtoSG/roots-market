@@ -148,7 +148,7 @@ router.put("/artisans/me", auth, validateSchema(artisanUpdateSchema), putArtisan
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/SocialNetwork'
+ *             $ref: '#/components/schemas/SocialNetworkUpdate'
  *     responses:
  *       200:
  *         description: Red social registrada exitosamente
@@ -168,7 +168,7 @@ router.put("/artisans/me", auth, validateSchema(artisanUpdateSchema), putArtisan
  *       500:
  *         description: Error al registrar la red social
  */
-router.post("/artisans/me/socialNetworks", auth, validateSchema(socialNetworkSchema), registerSocialNetwork)
+router.post("/artisans/me/socialNetworks", auth, validateSchema(socialNetworkUpdateSchema), registerSocialNetwork)
 
 /**
  * @swagger

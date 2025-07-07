@@ -262,8 +262,14 @@ export const readProductsByArtisan = async (
   id: number,
   page = 1,
   limit = 10
-) => {
+): Promise<ProductResponse> => {
   const offset = (page - 1) * limit 
+
+  const countSql = `
+    SELECT COUNT(*) AS total 
+    FROM Product p
+    WHERE p.artisanId = ? AND p.isDeleted = 0
+  `
 
   try {
     const query = `
@@ -299,18 +305,43 @@ export const readProductsByArtisan = async (
       LIMIT ? OFFSET ?;
     `
 
+    const { rows: totalRow } = await connection.execute({
+      sql: countSql,
+      args: [id]
+    })
+
+    const totalItems = totalRow.length > 0 ? Number(totalRow[0]?.total) : 0
+
     const { rows } = await connection.execute({
       sql: query,
       args: [id, limit, offset]
     })
 
-    const data = rows.map((row) => ({
-      ...row,
-      tags: parseJsonArray(row.tags),
-      images: parseJsonArray(row.images),
-    }))
+    const data: ProductResponseInfo[] = rows.map((row) => ({
+      productId: Number(row.productId ?? row[0]),
+      name: String(row.name ?? row[1]),
+      price: Number(row.price ?? row[2]),
+      story: String(row.story ?? row[3]),
+      categoryId: Number(row.categoryId ?? row[4]),
+      stock: Number(row.stock ?? row[5] ?? 0),
+      soldCount: Number(row.soldCount ?? row[6]),
+      artisanId: Number(row.artisanId ?? row[7]),
+      artisanName: String(row.artisanName ?? row[8]),
+      tags: parseJsonArray<TagResponse>(row.tags ?? row[9]),
+      images: parseJsonArray<ImageResponse>(row.images ?? row[10]),
+    }));
   
-    return data
+    const totalPages = Math.ceil(totalItems / limit)
+
+    return {
+      data,
+      meta: {
+        page,
+        limit,
+        totalItems,
+        totalPages
+      }
+    }
   } catch (error) {
     throw new Error("Error al leer el producto")
   }
@@ -346,7 +377,6 @@ export const readProducts = async(
     whereClauses.push("p.artisanId = ?");
     args.push(filters.artisanId);
   }
-
 
   const countSql = `
     SELECT COUNT(*) AS total

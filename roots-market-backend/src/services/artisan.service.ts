@@ -75,7 +75,6 @@ export const updateArtisan = async(id:number, artisan: ArtisanUpdate) => {
     UPDATE Artisan
     SET
       name            = ?,
-      username        = ?,
       email           = ?,
       bio             = ?,
       location        = ?,
@@ -86,7 +85,6 @@ export const updateArtisan = async(id:number, artisan: ArtisanUpdate) => {
       sql: query,
       args: [
         artisan.name,
-        artisan.username,
         artisan.email,
         artisan.bio,
         artisan.location,

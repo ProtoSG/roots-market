@@ -65,14 +65,6 @@ import type { ProductResponse } from "./product.model";
  *     ArtisanUpdate:
  *       allOf:
  *         - $ref: '#/components/schemas/ArtisanBase'
- *         - type: object
- *           properties:
- *             username:
- *               type: string
- *               description: Nombre de usuario
- *               maxLength: 50
- *           required:
- *             - username
  *     ArtisanResponse:
  *       allOf:
  *         - $ref: '#/components/schemas/Artisan'

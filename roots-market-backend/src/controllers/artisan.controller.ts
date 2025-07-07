@@ -25,11 +25,10 @@ export const getArtisanById = async(req: Request, res: Response) => {
 export const putArtisan = async(req: Request, res: Response) => {
   try {
     const id = req.user.id
-    const { name, username, email, bio, location, profileImageUrl } = req.body;
+    const { name, email, bio, location, profileImageUrl } = req.body;
     
     const artisan: ArtisanUpdate = {
       name,
-      username,
       email,
       bio,
       location,

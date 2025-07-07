@@ -34,8 +34,4 @@ export const artisanCreateSchema = artisanBaseSchema.extend({
   })
 });
 
-export const artisanUpdateSchema =  artisanBaseSchema.extend({
-  username: z.string({
-    required_error: "El campo 'username' es requerido"
-  }).min(1, "El nombre de usuario es obligatorio").max(50),
-})
+export const artisanUpdateSchema =  artisanBaseSchema.extend({})
