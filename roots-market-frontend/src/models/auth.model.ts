@@ -18,7 +18,16 @@ type backResponse =  {
   "message":string
 }
 
-export type LoginResponse = backResponse
+export type LoginSuccess = {
+  "id": number,
+  "username": string
+}
+
+export type LoginError = {
+  "message": string
+}
+
+export type LoginResponse = LoginSuccess | LoginError
 export type RegisterResponse = backResponse
 export type VerifyResponse = backResponse
 

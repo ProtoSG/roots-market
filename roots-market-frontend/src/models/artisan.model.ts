@@ -29,7 +29,6 @@ export const artisanUpdateSchema = baseArtisanSchema.extend({
 export type BaseArtisan = z.infer<typeof baseArtisanSchema>
 export type Artisan = z.infer<typeof artisanSchema>
 export type ArtisanLast = z.infer<typeof artisanTestimonySchema>
-export type ArtisanUpdate = z.infer<typeof artisanUpdateSchema>
 
 export type ArtisanResponse = {
   artisanId: number
@@ -57,4 +56,13 @@ export type ArtisanPaginationResponse = {
 export type ArtisanPagination = {
   data: Artisan[]
   meta: MetaPaginationInfo
+}
+
+export type ArtisanUpdate = z.infer<typeof artisanUpdateSchema>
+export type ArtisanUpdateRequest = {
+  name: string
+  bio: string
+  location: string
+  profileImageUrl: string
+  email: string
 }
