@@ -1,7 +1,11 @@
-import { SocialNetwork, SocialNetworkResponse } from "../models/socialNetwork.model";
+import { SocialNetwork, SocialNetworkResponse, socialNetworkSchema } from "../models/socialNetwork.model";
 
-export const socialNetworkAdapter = (socialNetwork: SocialNetworkResponse): SocialNetwork => ({
-  id: socialNetwork.socialNetworkId,
-  type: socialNetwork.type,
-  url: socialNetwork.URL
-})
+export const socialNetworkAdapter = (sn: SocialNetworkResponse): SocialNetwork => {
+  const parsed = socialNetworkSchema.parse({
+    id:  sn.socialNetworkId,
+    type: sn.type,
+    url:  sn.URL,
+  })
+
+  return parsed
+}
