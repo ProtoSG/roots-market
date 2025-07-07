@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { Product } from "../models/product.model"
 import { Artisan } from "../models/artisan.model"
+import { BaseSocialNetwork, SocialNetwork } from "../models/socialNetwork.model"
 
 interface ItemState<T> {
   item: T | null 
@@ -15,3 +16,4 @@ const createItemStore = <T>() => create<ItemState<T>>((set) => ({
 export const useProductStore = createItemStore<Product>()
 export const useArtisanStore = createItemStore<Artisan>()
 export const useArtisanUpdateStore = createItemStore<Artisan>()
+export const useSNUpdateStore = createItemStore<SocialNetwork>()
