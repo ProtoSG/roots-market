@@ -1,8 +1,8 @@
 import { createContext } from "react"
-import { Login, LoginResponse, Register } from "../models/auth.model"
+import { Login, LoginSuccess, Register } from "../models/auth.model"
 
 export interface AuthContextType {
-  user: LoginResponse | null;
+  user: LoginSuccess | null;
   isAuthenticated: boolean;
   errors: string[];
   loading: boolean;

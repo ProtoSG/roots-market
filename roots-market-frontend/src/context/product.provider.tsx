@@ -19,7 +19,7 @@ export const ProductProvider = ({children}: {children: ReactNode}) => {
     maxPrice: rangeFilter?.[1],
   });
 
-  const products = useQuery<ProductFilter>({
+  const {data: products} = useQuery<ProductFilter>({
     fn: () => getProductsRequest({
       page,
       limit: 9,                       
@@ -31,12 +31,12 @@ export const ProductProvider = ({children}: {children: ReactNode}) => {
     key
   })
 
-  const productsRanking = useQuery<Product[]>({
+  const {data: productsRanking} = useQuery<Product[]>({
     fn: () => getProductsRanking(),
     key: 'products-ranking'
   })
 
-  const productsRankingByArtisan = useQuery<Product[]>({
+  const {data: productsRankingByArtisan} = useQuery<Product[]>({
     fn: () => getProductsRankingByArtisan(item ? item.id : 0),
     key: `products-ranking-by-artisan-${item?.id}`
   })

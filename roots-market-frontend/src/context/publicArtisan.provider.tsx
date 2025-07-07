@@ -8,7 +8,7 @@ import { FilterArtisansStore } from "../stores/filterArtisansStore"
 export const PublicArtisanProvider = ({children}: {children: ReactNode}) => {
   const {page} = FilterArtisansStore()
 
-  const artisanLast = useQuery<ArtisanLast>({
+  const {data: artisanLast} = useQuery<ArtisanLast>({
     fn: getLastArtisan,
     key: 'artisan-last'
   })
@@ -19,7 +19,7 @@ export const PublicArtisanProvider = ({children}: {children: ReactNode}) => {
     page
   })
 
-  const artisans = useQuery<ArtisanPagination>({
+  const {data: artisans} = useQuery<ArtisanPagination>({
     fn: () => getArtisans({
       page,
     }),

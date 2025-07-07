@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from "react"
-import { Login, LoginResponse, Register, RegisterResponse } from "../models/auth.model"
+import { Login, LoginResponse, LoginSuccess, Register, RegisterResponse } from "../models/auth.model"
 import { loginRequest, registerRequest, verifyTokenRequest } from "../api/auth"
 import Cookies from "js-cookie"
 import { AuthContext } from "./aut.context"
@@ -44,7 +44,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       const { status, data } = await loginRequest(user);
 
       if (status >= 200 && status < 300 && data && !("message" in data)) {
-        setUser(data as LoginResponse);
+        setUser(data as LoginSuccess);
         setIsAuthenticated(true);
       } else if (data && "message" in data) {
         setErrors([data.message]);

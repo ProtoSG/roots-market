@@ -5,7 +5,7 @@ import { Category } from "../models/category.model"
 import { CategoryContext } from "./category.context"
 
 export const CategoryProvider = ({children}: {children: ReactNode}) => {
-  const categories = useQuery<Category[]>({
+  const {data: categories} = useQuery<Category[]>({
     fn: () => getCategory(),
     key: 'categories'
   })
