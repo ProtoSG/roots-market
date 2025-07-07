@@ -1,14 +1,12 @@
 import { ChangeEvent, useState } from "react"
-import { useProduct } from "../../hooks/useProduct"
 import { CardProduct, Paginations, SearchInput } from "../../components/UI"
 import { FilterButton } from "../../components/Products/FilterButton"
 import { UseFilterStore } from "../../stores/filterStore"
+import { ProductFilter } from "../../models/product.model"
 
-export function ListProducts() {
+export function ListProducts({products}: {products: ProductFilter}) {
   const [ searchWord, setSearchWord ] = useState("")
   const { setPage } = UseFilterStore()
-
-  const { products } = useProduct()
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target

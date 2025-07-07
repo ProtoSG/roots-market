@@ -10,7 +10,7 @@ interface Props {
 
 export function CardAllInfoArtisan({artisan}: Props) {
   const { setOpen } = useInfoArtisanDialogStore()
-  const {setItem} = useArtisanUpdateStore()
+  const { setItem } = useArtisanUpdateStore()
 
   const validNetworks = artisan.socialNetworks?.filter(
     (sn) => sn && sn.id != null
