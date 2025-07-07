@@ -15,7 +15,7 @@ export function CartItem({item}: Props) {
     >
       <div className="flex gap-4 items-center">
       <img 
-        src={item.product.images[0]}
+        src={item.product.images[0].imageUrl}
         alt={item.product.name}
         className="w-32 h-40 object-cover rounded-lg"
       />

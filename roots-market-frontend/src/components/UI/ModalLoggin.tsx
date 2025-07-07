@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLogginDialog } from "../../hooks/useDialog";
 import { uselogginDialogStore } from "../../stores/dialogStore";
 import { DialogContainer } from "./DialogContainer";

@@ -47,7 +47,11 @@ export function FilterProducts({className}: Props){
           />
         </FiletrItemsContainer>
         <SecondaryButton
-          onClick={() => {}}
+          onClick={() => {
+          clearRangeFilter()
+          clearCategoryFilter()
+          clearArtisanFilter()
+        }}
           className=""
         >
           ELIMINAR FILTROS
