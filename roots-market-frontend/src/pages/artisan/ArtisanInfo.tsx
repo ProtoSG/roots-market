@@ -1,6 +1,5 @@
 import { useArtisanPrivate } from "../../hooks/useArtisan"
-import { CardAllInfoArtisan } from "../../sections/Artisan/ArtisanInfo";
-import { ModaInfoArtisan } from "../../sections/Artisan/ArtisanInfo/ModalInfoArtisan";
+import { CardAllInfoArtisan, ModaInfoArtisan, ModalAddRSArtisan, ModalUpdateSN } from "../../sections/Artisan/ArtisanInfo";
 
 export function ArtisanInfo(){
   const {artisanInfo} = useArtisanPrivate()
@@ -9,6 +8,8 @@ export function ArtisanInfo(){
     <section className="w-full min-h-full flex items-center justify-center">
       <CardAllInfoArtisan artisan={artisanInfo} />
       <ModaInfoArtisan />
+      <ModalAddRSArtisan />
+      <ModalUpdateSN />
     </section>
   )
 }
