@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { MainContainer } from "../components/UI";
 import { NavAside } from "../components/Artisan";
 import { PrivateArtisanProvider } from "../context/privateArtisan.provider";
+import { Toaster } from "sonner";
 
 export function ArtisanLayout() {
   return (
@@ -10,6 +11,7 @@ export function ArtisanLayout() {
         <NavAside />
         <Outlet />
       </MainContainer>
+      <Toaster richColors/>
     </PrivateArtisanProvider>
   )
 }
