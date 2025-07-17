@@ -4,11 +4,10 @@ import { parseJsonArray } from "../utils/parseJsonArray.utils";
 import type { TagResponse } from "../models/tag.model";
 import type { ImageResponse } from "../models/image.model";
 
-export const createProduct = async(product: ProductCreate)=> {
+export const createProduct = async(product: ProductCreate, artisanId: number)=> {
   const transaction = await connection.transaction("write")
 
   try {
-    // Insertar Producto Nuevo
     const queryInsertProduct = `
       INSERT INTO Product 
         (name, story, price, stock, artisanId, categoryId)
@@ -22,7 +21,7 @@ export const createProduct = async(product: ProductCreate)=> {
         product.story,
         product.price,
         product.stock,
-        product.artisanId,
+        artisanId,
         product.categoryId,
       ],
     });
@@ -61,7 +60,7 @@ export const createProduct = async(product: ProductCreate)=> {
       const existing = await transaction
         .execute({
           sql: querySelectTag,
-          args: [tagName, product.artisanId]
+          args: [tagName, artisanId]
         })
         .then(r => r.rows?.[0] as { tagId: number } | undefined);
 
@@ -72,7 +71,7 @@ export const createProduct = async(product: ProductCreate)=> {
         // Creamos nu nuevo Tag
         const { lastInsertRowid: newTagId }  = await transaction.execute({
           sql: queryInsertTag,
-          args: [product.artisanId, tagName]
+          args: [artisanId, tagName]
         })
         tagId = Number(newTagId)
       }
@@ -252,9 +251,9 @@ export const deleteProduct = async(productId: number, artisanId: number) => {
     if (rowsAffected === 0) return null 
 
     return productId
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error en la base de datos al eliminar el producto")
-    throw new Error(`Error en la base de datos: `, error.message)
+    throw new Error(`Error en la base de datos: ${error.message}`)
   }
 } 
 
