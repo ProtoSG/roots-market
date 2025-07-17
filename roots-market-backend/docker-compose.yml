@@ -2,7 +2,13 @@ version: "3.8"
 
 services:
   app:
-    image: node-bun:v2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: roots-market-backend
+    container_name: roots-market-backend
+    restart: always
+
     ports:
       - "4000:4000"
     volumes:

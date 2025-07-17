@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import morgan from "morgan"
 
 import { FRONTEND_URL } from "./config.ts"
 import { swaggerSpec, swaggerUI } from "./swagger.ts"
@@ -20,6 +21,7 @@ app.use(
   })
 )
 app.use(express.json())
+app.use(morgan("dev"))
 app.use(cookieParser())
 
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec, {
