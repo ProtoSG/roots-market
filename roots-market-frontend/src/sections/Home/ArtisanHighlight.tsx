@@ -6,7 +6,7 @@ export function ArtisanHighlight(){
   return(
     <section className="sm:flex gap-6">
       <div className="bg-zinc-300 min-h-full min-w-60 rounded">
-        <img src={artisan.profileImageURL} className="h-full w-full rounded object-cover"/>
+        <img src={artisan.profileImageURL} className="h-full w-full rounded object-cover" loading="eager" width={400} height={300} />
       </div>
       <article
         className="flex flex-col justify-center gap-8 py-3 min-h-full "
