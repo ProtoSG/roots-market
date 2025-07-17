@@ -1,11 +1,10 @@
 import { ReactNode, useEffect, useState } from "react"
-import { Login, LoginResponse, LoginSuccess, Register, RegisterResponse } from "../models/auth.model"
-import { loginRequest, registerRequest, verifyTokenRequest } from "../api/auth"
-import Cookies from "js-cookie"
+import { Login, LoginSuccess, Register } from "../models/auth.model"
+import { loginRequest, logoutRequest, registerRequest, verifyTokenRequest } from "../api/auth"
 import { AuthContext } from "./aut.context"
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
-  const [user, setUser] = useState<LoginResponse | null>(null)
+  const [user, setUser] = useState<LoginSuccess | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [errors, setErrors] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
@@ -23,7 +22,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     try{
       const {status, data} = await registerRequest(user)
       if (status >= 200 && status < 300 && data && !("message" in data)) {
-        setUser(data as RegisterResponse);
+        setUser(data as LoginSuccess);
         setIsAuthenticated(true);
       } else if (data && "message" in data) {
         setErrors([data.message]);
@@ -61,26 +60,18 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   }
 
   const logout = async () => {
-    Cookies.remove("token")
+    await logoutRequest()
     setUser(null)
     setIsAuthenticated(false)
   }
 
   useEffect(() => {
     const checkLogin = async () => {
-      const cookies = Cookies.get()
-      if (!cookies.token) {
-        setIsAuthenticated(false)
-        setLoading(false)
-        return
-      }
-
       try {
         const res = await verifyTokenRequest()
-        console.log({res})
         if (!res.data) return setIsAuthenticated(false);
         setIsAuthenticated(true)
-        setUser(res.data)
+        setUser(res.data as LoginSuccess)
       } catch (error: unknown) {
         setIsAuthenticated(false)
       } finally {
