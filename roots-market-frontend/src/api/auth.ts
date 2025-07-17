@@ -8,6 +8,12 @@ export const loginRequest =  (user: Login) =>
     credentials: "include"
   })
 
+export const logoutRequest = () =>
+  requestJSON("/auth/logout", {
+    method: "POST",
+    credentials: "include"
+  })
+
 export const registerRequest = async (user: Register) => {
   const cleanData = {
     username: user.username,

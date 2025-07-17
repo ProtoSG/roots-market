@@ -31,8 +31,6 @@ export const getProductsRequest = async ({
 
   const uri = `/products?${params.toString()}`
 
-  console.log({uri})
-
   const {status, data} = await requestJSON<ProductResponse>(uri, {
     method: "GET"
   })

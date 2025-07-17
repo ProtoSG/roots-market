@@ -1,9 +1,9 @@
 import { artisanAdapter, artisanTestimonyAdapter, artisanUpdateAdapter } from "../adapters/artisan.adapter";
 import { productAdapter } from "../adapters/product.adapter";
-import { Artisan, ArtisanLast, ArtisanLastResponse, ArtisanPagination, ArtisanPaginationResponse, ArtisanResponse, ArtisanUpdate, ArtisanUpdateRequest } from "../models/artisan.model";
-import { ProductFilter, ProductResponse } from "../models/product.model";
+import { Artisan, ArtisanLast, ArtisanLastResponse, ArtisanPagination, ArtisanPaginationResponse, ArtisanResponse, ArtisanUpdate } from "../models/artisan.model";
+import { ProductCreate, ProductFilter, ProductResponse } from "../models/product.model";
 import { ResponseWritter } from "../models/response.model";
-import { BaseSocialNetwork, SocialNetwork } from "../models/socialNetwork.model";
+import { BaseSocialNetwork } from "../models/socialNetwork.model";
 import { requestJSON } from "./requestJSON"
 
 export const getLastArtisan = async(): Promise<ArtisanLast> => {
@@ -14,7 +14,6 @@ export const getLastArtisan = async(): Promise<ArtisanLast> => {
   if (status < 200 || status >= 300) {
     throw new Error(`Failed to fetch last artisan: ${status}`);
   }
-
 
   if (data === null) {
     throw new Error("No data received for last artisan");
@@ -162,4 +161,40 @@ export const getProductsArtisan = async (): Promise<ProductFilter> => {
   }
 
   return dataAdap;
+}
+
+export const createProduct = async (product: ProductCreate) => {
+  const { status, data } = await requestJSON<ResponseWritter>("/artisans/me/products", {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(product)
+  })
+
+  if (status < 200 || status >= 300) {
+    throw new Error(`Failed to fetch artisans: ${status}`);
+  }
+
+  if (data === null) {
+    throw new Error("No data received for social network");
+  }
+
+  return data
+}
+
+export const updateProduct = async (id: number, product: ProductCreate) => {
+  const { status, data } = await requestJSON<ResponseWritter>(`/artisans/me/products/${id}`, {
+    method: "PUT",
+    credentials: "include",
+    body: JSON.stringify(product)
+  })
+
+  if (status < 200 || status >= 300) {
+    throw new Error(`Failed to update product: ${status}`);
+  }
+
+  if (data === null) {
+    throw new Error("No data received for product update");
+  }
+
+  return data;
 }
