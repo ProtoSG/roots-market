@@ -5,7 +5,7 @@ const LINKS = [
   {
     icon: <UserIcon />,
     name: "Info",
-    url: "/artisan"
+    url: "/artisan/"
   },
   {
     icon: <BoxIcon />,
