@@ -37,7 +37,7 @@ export function ArtisanInfo() {
           alt={artisan.name}
           className="rounded-lg size-52 object-cover"
         />
-        <article className="flex flex-col gap-4">
+        <article className="flex flex-col gap-4 w-full">
           <header
             className="flex justify-between items-center"
           >
