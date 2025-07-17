@@ -73,10 +73,6 @@ export const productSchema = productBaseSchema.extend({
  *         - tags
  */
 export const productCreateSchema = productBaseSchema.extend({
-  artisanId: z.number({
-    required_error: "Falta el campo 'artisanId'"
-  }).int(),
-
   images: z.array(z.string(), {
     required_error: "Falta el campo 'images'",
     invalid_type_error: "El campo 'images' debe ser un arreglo de cadenas"
