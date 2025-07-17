@@ -21,7 +21,5 @@ export function useQuery<T>({fn, key}: Props<T>): {data: T, invalidate: () => vo
   const promise = promiseCache.get(key) as Promise<T>
   const data = use(promise)
 
-  console.log("UseQuery: ", data)
-
   return {data, invalidate}
 }

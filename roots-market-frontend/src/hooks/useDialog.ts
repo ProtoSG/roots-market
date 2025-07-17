@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-function useDialog(isOpen: boolean) {
+export function useDialog(isOpen: boolean) {
   const dialogRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -18,3 +18,4 @@ export const useLogginDialog = (isOpen: boolean) => useDialog(isOpen)
 export const useInfoArtisanDialog = (isOpen: boolean) => useDialog(isOpen)
 export const useAddRSArtisanDialog = (isOpen: boolean) => useDialog(isOpen)
 export const useUpdateSNDialog = (isOpen: boolean) => useDialog(isOpen)
+export const useProductCreateDialog = (isOpen: boolean) => useDialog(isOpen)
