@@ -7,7 +7,7 @@ interface Props {
 
 export function ListItemsSocialNetwork({items}: Props) {
   return (
-   <div className="flex flex-wrap items-center justify-evenly gap-8 w-full">
+   <div className="flex flex-wrap items-center gap-8 w-full">
       {items.length === 0 ? (
           <p className="text-primary">No hay redes sociales</p>
       ) : (

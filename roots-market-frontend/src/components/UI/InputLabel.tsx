@@ -1,7 +1,7 @@
 import {  forwardRef, InputHTMLAttributes, ReactNode } from "react";
 
 interface InputLabelProps extends InputHTMLAttributes<HTMLInputElement> {
-  icon: ReactNode;
+  icon?: ReactNode;
   error: string | undefined
 }
 

@@ -4,32 +4,34 @@ import { PrimaryButton } from "./Button";
 import { InputLabel } from "./InputLabel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Login, loginSchema } from "../../models/auth.model";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useRef } from "react";
-import { uselogginDialogStore } from "../../stores/dialogStore";
 import { ErrorBox } from "./ErrorBox";
 import { useAuth } from "../../hooks/useAuth";
+import { uselogginDialogStore } from "../../stores/dialogStore";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export function FormSignin() {
-  const firstRun = useRef(true);
-  const {setOpen} = uselogginDialogStore()
-  const { register, reset, handleSubmit, formState: { errors } } = useForm({
+  const {setOpen, isOpen} = uselogginDialogStore()
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: zodResolver(loginSchema)
   })
 
   const { signin, errors: loginErrors, isAuthenticated } = useAuth();
+
   const navigate = useNavigate()
 
-  const onSubmit = async (data: Login) =>  await signin(data);
+  const onSubmit = async (data: Login) => {
+    await signin(data);
+  }
 
   useEffect(() => {
-    if (firstRun.current && isAuthenticated) {
-      firstRun.current = false;
+    if (isAuthenticated && isOpen) {
       setOpen(false);
-      navigate("/artisan");
-      reset()
+      navigate("/artisan/");
+      reset();
     }
-  }, [isAuthenticated, navigate, setOpen]);
+  }, [isAuthenticated, navigate, setOpen, reset]);
+
 
   return(
     <section className="flex flex-col gap-8 ">

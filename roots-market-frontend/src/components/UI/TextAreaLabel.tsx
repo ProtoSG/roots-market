@@ -1,7 +1,7 @@
 import { forwardRef, InputHTMLAttributes, ReactNode } from "react";
 
 interface TextLabelProps extends InputHTMLAttributes<HTMLTextAreaElement> {
-  icon: ReactNode;
+  icon?: ReactNode;
   error: string | undefined
 }
 
@@ -19,9 +19,11 @@ export const TextAreaLabel = forwardRef<HTMLTextAreaElement, TextLabelProps>(({ 
           rows={6}
         />
       </label>
-      <p className="text-sm text-center text-red-500">
-        {error}
-      </p>
+      {error && (
+        <p className="text-sm text-center text-red-500">
+          {error}
+        </p>
+      )}
     </>
   )
 })

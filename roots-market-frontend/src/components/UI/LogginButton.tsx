@@ -4,13 +4,12 @@ import { useAuth } from "../../hooks/useAuth";
 
 export function LoginButton() {
   const { setOpen } = uselogginDialogStore()
-  const {isAuthenticated} = useAuth()
+  const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
-  console.log({isAuthenticated})
-
   const handleOpenOrNavigate = () => {
-    if (isAuthenticated) navigate("/artisan")
+    console.log("isAuthenticated", isAuthenticated)
+    if (isAuthenticated) navigate("/artisan/")
     else setOpen(true)
   }
 

@@ -31,8 +31,9 @@ export function FormSignup() {
   const [step, setStep] = useState<0 | 1 | 2 >(0);
   const [addTestimony, setAddTestimony] = useState(false)
   const { isAuthenticated, signup, errors: authErrors } = useAuth();
-  const {setOpen} = uselogginDialogStore()
-
+  const {setOpen, isOpen} = uselogginDialogStore()
+  const navigate = useNavigate()
+  
   const {
     register,
     handleSubmit,
@@ -59,16 +60,13 @@ export function FormSignup() {
     await signup(data);
   }
 
-  const navigate = useNavigate()
-
   useEffect(() => {
-    if (isAuthenticated) {
-      setOpen(false)
-      navigate("/artisan");
-      reset()
-      setStep(0)
+    if (isAuthenticated && isOpen) {
+      setOpen(false);
+      navigate("/artisan/");
+      reset();
     }
-  }, [isAuthenticated, setOpen]);
+  }, [isAuthenticated, navigate, setOpen, reset]);
 
   return(
     <section className="flex flex-col gap-8">
