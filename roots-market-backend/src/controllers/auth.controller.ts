@@ -6,6 +6,14 @@ import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config";
 import type { Artisan, ArtisanCreate } from "../models/artisan.model";
 
+const isProduction = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: "lax" as const,
+};
+
 export const register = async(req: Request, res: Response) => {
   try {
     const {
@@ -51,13 +59,7 @@ export const register = async(req: Request, res: Response) => {
       id: newArtisan.id,
     });
 
-    const isProduction = process.env.NODE_ENV === "production";
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      // secure: true,
-      // sameSite: "none",
-    });
+    res.cookie("token", token, cookieOptions);
 
     res.json({
       id: newArtisan.id,
@@ -90,11 +92,7 @@ export const login = async (req: Request, res: Response) => {
       id: userFound.id,
     });
 
-    res.cookie("token", token, {
-      httpOnly: process.env.NODE_ENV !== "development",
-      secure: true,
-      sameSite: "none",
-    });
+    res.cookie("token", token, cookieOptions);
 
     res.json({
       id: userFound.id,
@@ -122,12 +120,7 @@ export const verifyToken = async (req: Request, res: Response) => {
   })
 }
 
-
 export const logout = async (_: Request, res: Response) => {
-  res.cookie("token", "", {
-    httpOnly: true,
-    secure: true,
-    expires: new Date(0),
-  });
+  res.clearCookie("token")
   return res.sendStatus(200);
 };

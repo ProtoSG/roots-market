@@ -9,24 +9,24 @@ export const registerProduct = async(req: Request, res: Response ) => {
       story,
       price,
       stock,
-      artisanId,
       categoryId,
       images,
       tags,
     } = req.body
+
+    const artisanId = req.user.id
 
     const newProduct: ProductCreate = {
       name,
       story,
       price,
       stock,
-      artisanId,
       categoryId,
       images,
       tags,
     }
 
-    const productCreated = await createProduct(newProduct)
+    const productCreated = await createProduct(newProduct, artisanId)
 
     res.json({
       id: productCreated.productId,
