@@ -74,7 +74,7 @@ router.get("/verify", verifyToken)
  *               type: string
  *               description: Cookie de token eliminada
  */
-router.post("/logout", verifyToken, logout)
+router.post("/logout", logout)
 
 /**
  * @swagger
