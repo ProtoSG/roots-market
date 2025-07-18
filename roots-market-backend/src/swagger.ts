@@ -13,6 +13,9 @@ const options: swaggerJsdoc.Options = {
       {
         url: "http://localhost:4000/api",
       },
+      {
+       url: "https://roots-market.onrender.com/api",
+      }
     ],
   },
   apis: ["./src/routes/*.ts", "./src/models/*.ts", "./src/schemas/*.ts"],
