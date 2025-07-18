@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { Artisan, ArtisanLast, ArtisanPagination } from "../models/artisan.model";
+import { ArtisanLast, ArtisanPagination } from "../models/artisan.model";
 
 export interface PublicArtisanContextType {
   artisanLast: ArtisanLast

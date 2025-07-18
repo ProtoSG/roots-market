@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PrimaryButton } from "../../components/UI";
 import { FilterIcon } from "../../icons";
 import { FilterProducts } from "./FilterProducts";

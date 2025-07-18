@@ -1,7 +1,7 @@
 import { create } from "zustand"
 import { Product } from "../models/product.model"
 import { Artisan } from "../models/artisan.model"
-import { BaseSocialNetwork, SocialNetwork } from "../models/socialNetwork.model"
+import { SocialNetwork } from "../models/socialNetwork.model"
 
 interface ItemState<T> {
   item: T | null 

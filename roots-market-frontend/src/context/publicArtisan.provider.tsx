@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 import { PublicArtisanContext } from "./publicArtisan.context"
 import { useQuery } from "../hooks/useQuery"
-import { getArtisanInfo, getArtisans, getLastArtisan } from "../api/artisans"
+import { getArtisans, getLastArtisan } from "../api/artisans"
 import { ArtisanLast, ArtisanPagination } from "../models/artisan.model"
 import { FilterArtisansStore } from "../stores/filterArtisansStore"
 

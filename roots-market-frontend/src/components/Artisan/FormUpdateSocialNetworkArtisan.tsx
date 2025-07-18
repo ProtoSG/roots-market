@@ -60,7 +60,7 @@ export function FormUpdateSocialNetworkArtisan(){
       <div className="flex justify-end gap-4">
         <SecondaryButton
           type="button"
-          onClick={() => setOpen(false)}
+          onClick={() => setOpenDialogUpdateSN(false)}
         >
           Cancelar
         </SecondaryButton>
