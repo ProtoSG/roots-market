@@ -9,23 +9,24 @@ import ErrorBackPage from './ErrorBackPage.tsx'
 import { ProductProvider } from './context/product.provider.tsx'
 import { CategoryProvider } from './context/category.provider.tsx'
 import { PublicArtisanProvider } from './context/publicArtisan.provider.tsx'
+import { LoadingBackPage } from './LoadingBackPage.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary fallbackRender={({error}) => <ErrorBackPage error={error.message} />}>
-      <AuthProvider>
-        <ProductProvider>
-          <PublicArtisanProvider>
-            <CategoryProvider>
-              <BrowserRouter>
-                <Suspense fallback={<div>Loading...</div>}>
-                  <App />
-                </Suspense>
-              </BrowserRouter>
-            </CategoryProvider>
-          </PublicArtisanProvider>
-        </ProductProvider>
-      </AuthProvider>
+      <Suspense fallback={<LoadingBackPage />}>
+        <AuthProvider>
+          <ProductProvider>
+            <PublicArtisanProvider>
+              <CategoryProvider>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+              </CategoryProvider>
+            </PublicArtisanProvider>
+          </ProductProvider>
+        </AuthProvider>
+      </Suspense>
     </ErrorBoundary>
   </StrictMode>,
 )
